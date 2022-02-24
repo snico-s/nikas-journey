@@ -14,6 +14,7 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1>Nikas Journey</h1>
+        <h1 className="text-3xl font-bold underline">Hello world!</h1>
       </main>
 
       <footer className={styles.footer}>Footer</footer>
