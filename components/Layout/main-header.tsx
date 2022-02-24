@@ -63,13 +63,16 @@ function MainHeader() {
           }`}
         >
           <li className={`${classes.active}`}>
-            <Link href="/ueber-uns">Über uns</Link>
+            <Link href="/">Home</Link>
           </li>
           <li>
             <Link href="/ueber-uns">Über uns</Link>
           </li>
           <li>
-            <Link href="/ueber-uns">Über uns</Link>
+            <Link href="/route">Route</Link>
+          </li>
+          <li>
+            <Link href="/ausruestung">Ausrüstung</Link>
           </li>
         </ul>
       </nav>
