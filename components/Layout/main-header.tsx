@@ -25,12 +25,14 @@ function MainHeader() {
     <header className={`${classes.primaryHeader} ${classes.flex}`}>
       <div className={classes.logo}>
         <Link href="/">
-          <Image
-            src="/nikas-journey-logo.png"
-            alt="Nikas Journey Logo"
-            width={48}
-            height={48}
-          />
+          <a>
+            <Image
+              src="/nikas-journey-logo.png"
+              alt="Nikas Journey Logo"
+              width={48}
+              height={48}
+            />
+          </a>
         </Link>
       </div>
 

@@ -1,7 +1,18 @@
+import { useMemo } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 function Route() {
+  const MyMap = useMemo(
+    () =>
+      dynamic(() => import("../../components/MyMap"), {
+        loading: () => <p>A map is loading</p>,
+        ssr: false,
+      }),
+    []
+  );
+
   return (
     <div>
       <Head>
@@ -10,8 +21,16 @@ function Route() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h1>Route</h1>
-      <Link href={"/route/erstellen"}>Neue Strecke Erstellen</Link>
+      {/* Content */}
+      <div className="mt-20  md:flex-row  h-(screen-80) max-h-calc ">
+        {/* Map */}
+        <div className="fixed top-20 h-320">
+          <MyMap />
+        </div>
+      </div>
+
+      {/* <h1>Route</h1> */}
+      {/* <Link href={"/route/erstellen"}>Neue Strecke Erstellen</Link> */}
     </div>
   );
 }
