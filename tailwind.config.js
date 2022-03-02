@@ -7,7 +7,7 @@ module.exports = {
     extend: {
       height: {
         "(screen-1)": "calc(100vh - 1)",
-        "(screen-80)": "calc(100vh - 5rem)",
+        "(screen-20)": "calc(100vh - 5rem)",
         "(screen-320)": "calc(100vh - 20rem - 5rem)",
         "(screen-432)": "calc(100vh - 30rem)",
         "(timeline-first)": "calc(100% + 2rem)",
