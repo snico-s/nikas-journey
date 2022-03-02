@@ -6,3 +6,11 @@ type routeData = {
   distance: number;
   route?: GeoJSON.Feature<LineString>;
 };
+
+type TimeLineData = {
+  _id: number;
+  day: number;
+  date: string;
+  title: string;
+  content: string;
+};

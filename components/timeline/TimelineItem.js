@@ -7,9 +7,9 @@ function TimelineItem(props) {
   // Destructure Item-Data
   const { _id, day, date, title, content } = data;
 
-  const dateString = `${date.getDate()}. ${new Intl.DateTimeFormat("de-DE", {
+  const dateString = `${date?.getDate()}. ${new Intl.DateTimeFormat("de-DE", {
     month: "long",
-  }).format(date)} ${date.getFullYear()}`;
+  }).format(date)} ${date?.getFullYear()}`;
 
   useEffect(() => {
     if (selected === -1) return;

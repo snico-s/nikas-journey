@@ -18,17 +18,19 @@ function MapLibre() {
         style: `https://api.maptiler.com/maps/basic/style.json?key=9V8S1PVf6CfINuabJsSA`,
         center: [lng, lat],
         zoom: zoom,
+        // attributionControl: false,
       });
       new maplibregl.Marker({ color: "#FF0000" })
         .setLngLat([139.7525, 35.6846])
         .addTo(map.current);
       // Add zoom and rotation controls to the map.
       map.current.addControl(new maplibregl.NavigationControl({}));
+      // map.current.addControl(new maplibregl.AttributionControl(), "top-left");
     }
   }, []);
 
   return (
-    <div className="relative w-full h-(screen-20)">
+    <div className="relative w-full h-(screen-320) md:h-(screen-20)">
       <div id="map" ref={mapContainer} className="absolute w-full h-full" />
     </div>
   );

@@ -1,18 +1,23 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { getData, getTimelineData } from "../../data";
 import dynamic from "next/dynamic";
 import MapLibre from "../../components/MapLibre";
+import Timeline from "../../components/timeline/Timeline";
 
 function Route() {
-  const MyMap = useMemo(
-    () =>
-      dynamic(() => import("../../components/MapLibre"), {
-        loading: () => <p>A map is loading</p>,
-        ssr: false,
-      }),
-    []
-  );
+  const [selectedRoute, setSelectedRoute] = useState(-1);
+  const [geoData, setGeoData] = useState({});
+  const [timeLineData, setTimeLineData] = useState([{}]);
+
+  useEffect(() => {
+    // setGeoData(getData());
+    const data = getTimelineData();
+    const routes = data.flatMap((item) => item.route);
+    setTimeLineData(data);
+    setGeoData(routes);
+  }, []);
 
   return (
     <div>
@@ -23,15 +28,16 @@ function Route() {
       </Head>
 
       {/* Content */}
-      <div className="  md:flex-row sm:h-full h-(screen-20) max-h-calc ">
-        {/* <MyMap /> */}
+      <div className="md:flex h-(screen-20)">
         <MapLibre />
-        <div className="fixed top-20 h-320"></div>
-        {/* <MyMap /> */}
+        <div className="bg-white w-full h-80 overflow-y-auto md:h-full">
+          <Timeline
+            data={timeLineData}
+            selected={selectedRoute}
+            onClick={setSelectedRoute}
+          />
+        </div>
       </div>
-
-      {/* <h1>Route</h1> */}
-      {/* <Link href={"/route/erstellen"}>Neue Strecke Erstellen</Link> */}
     </div>
   );
 }
