@@ -6,9 +6,11 @@ type Props = {};
 
 function Erstellen({}: Props) {
   const formData = {
-    body: "",
+    text: "",
     title: "",
-    day: "",
+    date: "",
+    outgoings: 0,
+    distance: 0,
   };
 
   return (
