@@ -1,14 +1,19 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 import Link from "next/dist/client/link";
 import classes from "./main-header.module.css";
 
 import logo from "../../assets/nikas-journey-logo.png";
 import Image from "next/image";
+import { Rect } from "maplibre-gl";
 
 function MainHeader() {
+  const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const menuSrOnlySpan = useRef<HTMLSpanElement>(null);
+
+  console.log(session);
 
   let resizeTimer: any;
   useEffect(() => {
@@ -76,6 +81,33 @@ function MainHeader() {
           <li>
             <Link href="/ausruestung">Ausrüstung</Link>
           </li>
+          {!session ? (
+            <li>
+              <Link href="/api/auth/signin">
+                <a
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    e.preventDefault;
+                    signIn();
+                  }}
+                >
+                  Sign In
+                </a>
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <Link href="/api/auth/signout">
+                <a
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    e.preventDefault;
+                    signOut();
+                  }}
+                >
+                  Sign Out
+                </a>
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
     </header>

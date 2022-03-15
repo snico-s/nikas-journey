@@ -14,3 +14,16 @@ type TimeLineData = {
   title: string;
   content: string;
 };
+
+type User = {
+  name?: string;
+  email: string;
+  password: string;
+};
+
+interface mymaplibre extends maplibregl.Map {
+  addControl(
+    control: IControl | MapboxDraw,
+    position?: maplibregl.ControlPosition
+  ): this;
+}
