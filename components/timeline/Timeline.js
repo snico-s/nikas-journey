@@ -8,6 +8,7 @@ function Timeline(props) {
   const length = props.data.length;
 
   useEffect(() => {
+    console.log(data);
     if (selected === -1) return;
     const el = document.getElementById(selected);
     console.log(el);

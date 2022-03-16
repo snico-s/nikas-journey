@@ -21,16 +21,12 @@ export default async function handler(
 ) {
   const { method } = req;
 
-  console.log("Hier");
-
   await dbConnect();
 
   switch (method) {
     case "GET":
       try {
-        const routes: Array<routeData> = await Route.find(
-          {}
-        ); /* find all the data in our database */
+        const routes: Array<routeData> = await Route.find({});
         res.status(200).json({ success: false, data: routes });
       } catch (error) {
         res.status(400).json({ success: false });
