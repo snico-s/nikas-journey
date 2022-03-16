@@ -1,23 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
-import Link from "next/link";
-import { getData, getTimelineData } from "../../data";
-import dynamic from "next/dynamic";
 import MapLibre from "../../components/MapLibre";
 import Timeline from "../../components/timeline/Timeline";
+import { GetServerSideProps } from "next";
+import Route from "../../models/Route";
+import dbConnect from "../../lib/dbConnect";
 
-function Route() {
+type Props = {
+  routes: Array<routeData> | [];
+};
+
+function RoutePage({ routes }: Props) {
   const [selectedRoute, setSelectedRoute] = useState(-1);
-  const [geoData, setGeoData] = useState({});
   const [timeLineData, setTimeLineData] = useState([{}]);
-
-  useEffect(() => {
-    // setGeoData(getData());
-    const data = getTimelineData();
-    const routes = data.flatMap((item) => item.route);
-    setTimeLineData(data);
-    setGeoData(routes);
-  }, []);
 
   return (
     <div>
@@ -32,7 +27,7 @@ function Route() {
         <MapLibre />
         <div className="bg-white w-full h-80 overflow-y-auto md:h-full">
           <Timeline
-            data={timeLineData}
+            data={routes}
             selected={selectedRoute}
             onClick={setSelectedRoute}
           />
@@ -42,4 +37,15 @@ function Route() {
   );
 }
 
-export default Route;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  await dbConnect();
+  const data: Array<routeData> = await Route.find({});
+  console.log(typeof data);
+  const routes = JSON.parse(JSON.stringify(data));
+  console.log(typeof routes);
+
+  // Pass data to the page via props
+  return { props: { routes } };
+};
+
+export default RoutePage;
