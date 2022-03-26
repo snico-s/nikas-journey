@@ -29,6 +29,7 @@ const RouteSchema = new mongoose.Schema<routeData>({
       // enum: ["Feature"], // 'location.type' must be 'Point'
       required: true,
     },
+    id: String,
     properties: {},
     geometry: {
       type: { type: String },

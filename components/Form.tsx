@@ -3,78 +3,21 @@ import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { LineString, MultiLineString } from "geojson";
 import { gpx } from "@tmcw/togeojson";
-import { read } from "fs";
+import { TravelDay } from "@prisma/client";
 
-type FormProps = {
-  routeData: routeData;
-  newData: boolean;
-};
-
-const Form = ({ routeData, newData }: FormProps) => {
+const Form = () => {
   const router = useRouter();
   const contentType = "application/json";
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
 
-  const [form, setForm] = useState<routeData>({
-    date: routeData.date,
-    title: routeData.title,
-    text: routeData.text,
-    outgoings: routeData.outgoings,
-    distance: routeData.distance,
-    route: routeData.route,
+  const [form, setForm] = useState({
+    date: new Date(),
+    title: "",
+    body: "",
+    distance: null,
+    route: {},
   });
-
-  /* The PUT method edits an existing entry in the mongodb database. */
-  const putData = async () => {
-    const { id } = router.query;
-
-    try {
-      const res = await fetch(`/api/routes/${id}`, {
-        method: "PUT",
-        headers: {
-          Accept: contentType,
-          "Content-Type": contentType,
-        },
-        body: JSON.stringify(form),
-      });
-
-      // Throw error with status code in case Fetch API req failed
-      if (!res.ok) {
-        throw new Error("Status: " + res.status);
-      }
-
-      const { data } = await res.json();
-
-      mutate(`/api/pets/${id}`, data, false); // Update the local data without a revalidation
-      router.push("/");
-    } catch (error) {
-      setMessage("Failed to update");
-    }
-  };
-
-  /* The POST method adds a new entry in the mongodb database. */
-  const postData = async () => {
-    try {
-      const res = await fetch("/api/routes", {
-        method: "POST",
-        headers: {
-          Accept: contentType,
-          "Content-Type": contentType,
-        },
-        body: JSON.stringify(form),
-      });
-
-      // Throw error with status code in case Fetch API req failed
-      if (!res.ok) {
-        throw new Error("Status" + res.status);
-      }
-
-      router.push("/");
-    } catch (error) {
-      setMessage("Failed to add");
-    }
-  };
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
@@ -109,6 +52,9 @@ const Form = ({ routeData, newData }: FormProps) => {
             if (["LineString", "MultiLineString"].includes(type)) {
               const feature = fc
                 .features[0] as GeoJSON.Feature<MultiLineString>;
+
+              feature.geometry;
+
               setForm({
                 ...form,
                 route: feature,
@@ -138,23 +84,41 @@ const Form = ({ routeData, newData }: FormProps) => {
     });
   };
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    newData ? postData() : putData();
-    // const errs = formValidate();
-    // if (Object.keys(errs).length === 0) {
-    //   newData ? postData() : putData();
-    // } else {
-    //   setErrors({ errs });
-    // }
+
+    const errs = formValidate();
+    if (Object.keys(errs).length > 0) {
+      setErrors({ errs });
+    }
+
+    try {
+      const res = await fetch("/api/travel-day", {
+        method: "POST",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType,
+        },
+        body: JSON.stringify(form),
+      });
+
+      // Throw error with status code in case Fetch API req failed
+      if (!res.ok) {
+        throw new Error("Status" + res.status);
+      }
+
+      router.push("/");
+    } catch (error) {
+      setMessage("Failed to add");
+    }
   };
 
   /* Makes sure pet info is filled for pet name, owner name, species, and image url*/
   const formValidate = () => {
     let err: any = {};
     if (!form.date) err.date = "Day is required";
-    if (!form.title) err.title = "Title is required";
-    if (!form.text) err.text = "Body is required";
+    // if (!form.title) err.title = "Title is required";
+    // if (!form.body) err.text = "Body is required";
     return err;
   };
 
@@ -173,7 +137,6 @@ const Form = ({ routeData, newData }: FormProps) => {
                   maxLength={20}
                   name="gpx"
                   onChange={handleGpxInput}
-                  required
                 />
               </div>
             </div>
@@ -187,7 +150,7 @@ const Form = ({ routeData, newData }: FormProps) => {
                   type="date"
                   maxLength={20}
                   name="date"
-                  value={form.date}
+                  value={form.date ? "" + form.date : ""}
                   onChange={handleChangeInput}
                   required
                 />
@@ -202,9 +165,8 @@ const Form = ({ routeData, newData }: FormProps) => {
                 type="text"
                 maxLength={20}
                 name="title"
-                value={form.title}
+                value={form.title ? form.title : ""}
                 onChange={handleChangeInput}
-                required
               />
             </div>
 
@@ -213,11 +175,9 @@ const Form = ({ routeData, newData }: FormProps) => {
                 Text
               </label>
               <textarea
-                maxLength={200}
-                name="text"
-                value={form.text}
+                name="body"
+                value={form.body ? form.body : ""}
                 onChange={handleChangeTextArea}
-                required
                 rows={10}
               />
             </div>

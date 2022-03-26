@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  posts    Post[]
+  timeLine TimeLine[]
+}
+
+model TimeLine {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  collectionId     Int
+  routeColleaction RouteColleaction @relation(fields: [collectionId], references: [id])
+  userId           Int
+  users            User             @relation(fields: [userId], references: [id])
+}
+
+model Post {
+  id    Int     @id @default(autoincrement())
+  title String?
+  body  String
+
+  userId           Int
+  user             User             @relation(fields: [userId], references: [id])
+  collectionId     Int
+  routeColleaction RouteColleaction @relation(fields: [collectionId], references: [id])
+}
+
+model RouteColleaction {
+  id        Int      @id @default(autoincrement())
+  name      String
+  startDate DateTime
+
+  collectiondays CollectionDays[]
+  post           Post[]
+  TimeLine       TimeLine[]
+}
+
+model CollectionDays {
+  routeCollectionId Int
+  travaldayId       Int
+  collection        RouteColleaction @relation(fields: [routeCollectionId], references: [id])
+  travaledays       TravelDay        @relation(fields: [travaldayId], references: [id])
+
+  @@id([routeCollectionId, travaldayId])
+}
+
+model TravelDay {
+  id       Int      @id @default(autoincrement())
+  title    String?
+  body     String?
+  date     DateTime
+  distance Decimal?
+
+  collectiondays CollectionDays[]
+  route          Route[]
+  payments       Payments[]
+}
+
+model Route {
+  id          Int    @id @default(autoincrement())
+  type        String
+  coordinates Json
+  properties  Json
+
+  travelDay   TravelDay? @relation(fields: [travelDayId], references: [id])
+  travelDayId Int?
+}
+
+model Payments {
+  id           Int      @id @default(autoincrement())
+  amount       Decimal
+  currency     String?
+  exchangeRate Decimal?
+  category     String?
+  description  String?
+
+  travelDayId Int
+  travelDay   TravelDay @relation(fields: [travelDayId], references: [id])
+}

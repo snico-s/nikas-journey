@@ -1,4 +1,5 @@
 type routeData = {
+  _id?: string;
   date: string;
   title: string;
   text: string;

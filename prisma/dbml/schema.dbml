@@ -1,0 +1,96 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id Int [pk, increment]
+  name String [not null]
+  posts Post [not null]
+  timeLine TimeLine [not null]
+}
+
+Table TimeLine {
+  id Int [pk, increment]
+  name String [not null]
+  collectionId Int [not null]
+  routeColleaction RouteColleaction [not null]
+  userId Int [not null]
+  users User [not null]
+}
+
+Table Post {
+  id Int [pk, increment]
+  title String
+  body String [not null]
+  userId Int [not null]
+  user User [not null]
+  collectionId Int [not null]
+  routeColleaction RouteColleaction [not null]
+}
+
+Table RouteColleaction {
+  id Int [pk, increment]
+  name String [not null]
+  startDate DateTime [not null]
+  collectiondays CollectionDays [not null]
+  post Post [not null]
+  TimeLine TimeLine [not null]
+}
+
+Table CollectionDays {
+  routeCollectionId Int [not null]
+  travaldayId Int [not null]
+  collection RouteColleaction [not null]
+  travaledays TravelDay [not null]
+
+  indexes {
+    (routeCollectionId, travaldayId) [pk]
+  }
+}
+
+Table TravelDay {
+  id Int [pk, increment]
+  title String
+  body String
+  date DateTime [not null]
+  distance Decimal
+  collectiondays CollectionDays [not null]
+  route Route [not null]
+  payments Payments [not null]
+}
+
+Table Route {
+  id Int [pk, increment]
+  type String [not null]
+  coordinates Json [not null]
+  properties Json [not null]
+  travelDay TravelDay
+  travelDayId Int
+}
+
+Table Payments {
+  id Int [pk, increment]
+  amount Decimal [not null]
+  currency String
+  exchangeRate Decimal
+  category String
+  description String
+  travelDayId Int [not null]
+  travelDay TravelDay [not null]
+}
+
+Ref: TimeLine.collectionId > RouteColleaction.id
+
+Ref: TimeLine.userId > User.id
+
+Ref: Post.userId > User.id
+
+Ref: Post.collectionId > RouteColleaction.id
+
+Ref: CollectionDays.routeCollectionId > RouteColleaction.id
+
+Ref: CollectionDays.travaldayId > TravelDay.id
+
+Ref: Route.travelDayId > TravelDay.id
+
+Ref: Payments.travelDayId > TravelDay.id

@@ -11,7 +11,7 @@ type Props = {
 };
 
 function RoutePage({ routes }: Props) {
-  const [selectedRoute, setSelectedRoute] = useState(-1);
+  const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
   const [timeLineData, setTimeLineData] = useState([{}]);
 
   return (
@@ -24,7 +24,11 @@ function RoutePage({ routes }: Props) {
 
       {/* Content */}
       <div className="md:flex h-(screen-20)">
-        <MapLibre />
+        <MapLibre
+          route={routes}
+          onClick={setSelectedRoute}
+          selected={selectedRoute}
+        />
         <div className="bg-white w-full h-80 overflow-y-auto md:h-full">
           <Timeline
             data={routes}

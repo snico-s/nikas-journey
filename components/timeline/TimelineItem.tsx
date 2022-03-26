@@ -1,11 +1,20 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, Dispatch, SetStateAction } from "react";
 
-function TimelineItem(props) {
-  const myRef = useRef();
+type Props = {
+  data: routeData;
+  selected: boolean;
+  last: boolean;
+  first: boolean;
+  onClick: Dispatch<SetStateAction<string | null>>;
+};
+
+function TimelineItem({ data, selected, last, first, onClick }: Props) {
+  const myRef = useRef<HTMLLIElement>(null);
   // Destructure props
-  const { data, selected, last, first } = props;
   // Destructure Item-Data
-  const { _id, day, date, title, content } = data;
+  const { date, title, text, route } = data;
+
+  const day = 3;
 
   const jsDate = new Date(date);
 
@@ -14,7 +23,9 @@ function TimelineItem(props) {
   }).format(jsDate)} ${jsDate?.getFullYear()}`;
 
   useEffect(() => {
-    if (selected === -1) return;
+    if (!myRef.current) throw Error("divRef is not assigned");
+
+    // // if (selected === -1) return;
     // myRef.current.scrollIntoView({
     //   behavior: "smooth",
     // });
@@ -24,9 +35,13 @@ function TimelineItem(props) {
   return (
     <li
       className="relative mb-2 last:mb-0 dark:border-gray-700"
-      onClick={() => props.onClick(_id)}
+      onClick={() => {
+        if (!route) return;
+        if (!route.id) return;
+        onClick("" + route?.id);
+      }}
       ref={myRef}
-      id={_id}
+      id={"" + route?.id}
     >
       {/* Line */}
       <div
@@ -68,7 +83,7 @@ function TimelineItem(props) {
         </h3>
         {/* Content */}
         <p className="mb-4 pl-2 text-base font-normal text-gray-500 dark:text-gray-400">
-          {content}
+          {text}
         </p>
         {/* Read more Button */}
         <a
