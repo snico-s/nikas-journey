@@ -30,9 +30,6 @@ export default async function handler(
     case "POST":
       try {
         // const route: GeoJSON.Feature<LineString> = req.body.route;
-        const route = req.body.route;
-        console.log(route);
-
         let travelDay: Prisma.TravelDayCreateInput;
 
         travelDay = {
@@ -42,6 +39,7 @@ export default async function handler(
           distance: req.body.distance,
         };
 
+        const route = req.body.route;
         if (Object.keys(route).length > 0) {
           travelDay = {
             ...travelDay,
@@ -60,35 +58,6 @@ export default async function handler(
         });
 
         res.status(201).json({ success: true, data: createTravelDay });
-
-        // if (Object.keys(route).length === 0) {
-        //   const travelDay = await prisma.travelDay.create({
-        //     data: {
-        //       title: req.body.title,
-        //       date: new Date(req.body.date),
-        //       body: req.body.body,
-        //       distance: req.body.distance,
-        //       route: {
-        //         create: {
-        //           type: route.geometry.type,
-        //           coordinates: route.geometry?.coordinates,
-        //           properties: route.properties,
-        //         },
-        //       },
-        //     },
-        //   });
-        //   res.status(201).json({ success: true, data: travelDay });
-        // } else {
-        //   const travelDay = await prisma.travelDay.create({
-        //     data: {
-        //       title: req.body.title,
-        //       date: new Date(req.body.date),
-        //       body: req.body.body,
-        //       distance: req.body.distance,
-        //     },
-        //   });
-        //   res.status(201).json({ success: true, data: travelDay });
-        // }
       } catch (error) {
         console.log(error);
         res.status(400).json({ success: false });
