@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useState } from "react";
+import React, { ChangeEventHandler, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { LineString, MultiLineString } from "geojson";
@@ -11,27 +11,25 @@ const Form = () => {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
 
-  const [form, setForm] = useState({
-    date: new Date(),
-    title: "",
-    body: "",
-    distance: null,
-    route: {},
-  });
+  // const [form, setForm] = useState({
+  //   date: new Date().toISOString().slice(0, 10),
+  //   title: "",
+  //   body: "",
+  //   distance: null,
+  //   route: {},
+  //   payments: [] as number[],
+  // });
 
-  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target;
-    const value = target.value;
-
-    setForm({
-      ...form,
-      [target.name]: value,
-    });
-  };
+  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [distance, setDistance] = useState(0);
+  const [route, setRoute] = useState({});
+  const [payments, setPayments] = useState<number[]>([]);
+  const [payment, setPayment] = useState(0);
 
   const handleGpxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
-    const value = target.value;
 
     if (target.files != null) {
       const file = target.files[0];
@@ -55,9 +53,8 @@ const Form = () => {
 
               feature.geometry;
 
-              setForm({
-                ...form,
-                route: feature,
+              setRoute({
+                feature,
               });
             }
           }
@@ -67,21 +64,6 @@ const Form = () => {
         console.error("Fehler beim lesen");
       };
     }
-
-    setForm({
-      ...form,
-      [target.name]: value,
-    });
-  };
-
-  const handleChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const target = e.target;
-    const value = target.value;
-
-    setForm({
-      ...form,
-      [target.name]: value,
-    });
   };
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -91,6 +73,8 @@ const Form = () => {
     if (Object.keys(errs).length > 0) {
       setErrors({ errs });
     }
+
+    const form = { date, title, body, payments, route, distance };
 
     try {
       const res = await fetch("/api/travel-day", {
@@ -116,7 +100,7 @@ const Form = () => {
   /* Makes sure pet info is filled for pet name, owner name, species, and image url*/
   const formValidate = () => {
     let err: any = {};
-    if (!form.date) err.date = "Day is required";
+    if (!date) err.date = "Day is required";
     // if (!form.title) err.title = "Title is required";
     // if (!form.body) err.text = "Body is required";
     return err;
@@ -148,10 +132,9 @@ const Form = () => {
               <div className="mt-1">
                 <input
                   type="date"
-                  maxLength={20}
                   name="date"
-                  value={form.date ? "" + form.date : ""}
-                  onChange={handleChangeInput}
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
                   required
                 />
               </div>
@@ -163,10 +146,9 @@ const Form = () => {
               </label>
               <input
                 type="text"
-                maxLength={20}
                 name="title"
-                value={form.title ? form.title : ""}
-                onChange={handleChangeInput}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
 
@@ -176,10 +158,40 @@ const Form = () => {
               </label>
               <textarea
                 name="body"
-                value={form.body ? form.body : ""}
-                onChange={handleChangeTextArea}
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
                 rows={10}
               />
+            </div>
+
+            <div className="flex items-center">
+              <label className="block text-sm font-medium" htmlFor="text">
+                Ausgaben
+              </label>
+              <input
+                type="number"
+                name="title"
+                value={payment}
+                onChange={(e) => setPayment(+e.target.value)}
+                className="mx-2"
+              />
+              <button
+                className="btn mx-2"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPayments((oldArray) => [...oldArray, payment]);
+                }}
+              >
+                Add
+              </button>
+            </div>
+
+            <div>
+              <ul>
+                {payments.map((payment, index) => (
+                  <li key={index}>{payment}</li>
+                ))}
+              </ul>
             </div>
 
             <button type="submit" className="btn">
