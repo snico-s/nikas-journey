@@ -66,12 +66,12 @@ model TravelDay {
   id       Int      @id @default(autoincrement())
   title    String?
   body     String?
-  date     DateTime
+  date     DateTime @unique
   distance Decimal?
 
   collectiondays CollectionDays[]
   route          Route[]
-  payments       Payments[]
+  payments       Payment[]
 }
 
 model Route {
@@ -84,14 +84,22 @@ model Route {
   travelDayId Int?
 }
 
-model Payments {
-  id           Int      @id @default(autoincrement())
-  amount       Decimal
-  currency     String?
-  exchangeRate Decimal?
-  category     String?
-  description  String?
+model Payment {
+  id          Int     @id @default(autoincrement())
+  amount      Decimal
+  category    String?
+  description String?
 
   travelDayId Int
   travelDay   TravelDay @relation(fields: [travelDayId], references: [id])
+  currencyId  String
+  currency    Currency  @relation(fields: [currencyId], references: [isoCode])
+}
+
+model Currency {
+  isoCode      String   @id
+  currency     String   @unique
+  exchangeRate Decimal?
+
+  payments Payment[]
 }

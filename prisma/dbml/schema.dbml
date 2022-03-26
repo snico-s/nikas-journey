@@ -52,11 +52,11 @@ Table TravelDay {
   id Int [pk, increment]
   title String
   body String
-  date DateTime [not null]
+  date DateTime [unique, not null]
   distance Decimal
   collectiondays CollectionDays [not null]
   route Route [not null]
-  payments Payments [not null]
+  payments Payment [not null]
 }
 
 Table Route {
@@ -68,15 +68,22 @@ Table Route {
   travelDayId Int
 }
 
-Table Payments {
+Table Payment {
   id Int [pk, increment]
   amount Decimal [not null]
-  currency String
-  exchangeRate Decimal
   category String
   description String
   travelDayId Int [not null]
   travelDay TravelDay [not null]
+  currencyId String [not null]
+  currency Currency [not null]
+}
+
+Table Currency {
+  isoCode String [pk]
+  currency String [unique, not null]
+  exchangeRate Decimal
+  payments Payment [not null]
 }
 
 Ref: TimeLine.collectionId > RouteColleaction.id
@@ -93,4 +100,6 @@ Ref: CollectionDays.travaldayId > TravelDay.id
 
 Ref: Route.travelDayId > TravelDay.id
 
-Ref: Payments.travelDayId > TravelDay.id
+Ref: Payment.travelDayId > TravelDay.id
+
+Ref: Payment.currencyId > Currency.isoCode
