@@ -1,6 +1,6 @@
 import Head from "next/head";
 import React from "react";
-import Form from "../../components/Form";
+import Form from "../../components/Forms/AddTravelDay";
 
 type Props = {};
 

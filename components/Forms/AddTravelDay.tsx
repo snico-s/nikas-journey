@@ -5,7 +5,7 @@ import { LineString, MultiLineString } from "geojson";
 import { gpx } from "@tmcw/togeojson";
 import { TravelDay } from "@prisma/client";
 
-const Form = () => {
+const AddTravelDay = () => {
   const router = useRouter();
   const contentType = "application/json";
   const [errors, setErrors] = useState({});
@@ -182,4 +182,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default AddTravelDay;
