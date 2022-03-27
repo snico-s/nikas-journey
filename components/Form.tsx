@@ -25,8 +25,6 @@ const Form = () => {
   const [body, setBody] = useState("");
   const [distance, setDistance] = useState(0);
   const [route, setRoute] = useState({});
-  const [payments, setPayments] = useState<number[]>([]);
-  const [payment, setPayment] = useState(0);
 
   const handleGpxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
@@ -74,7 +72,7 @@ const Form = () => {
       setErrors({ errs });
     }
 
-    const form = { date, title, body, payments, route, distance };
+    const form = { date, title, body, route, distance };
 
     try {
       const res = await fetch("/api/travel-day", {
@@ -111,6 +109,7 @@ const Form = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-6 rounded-lg sm:shadow sm:px-10">
           <form className="mb-0 space-y-6" onSubmit={handleSubmit}>
+            {/* GPX Upload */}
             <div>
               <label className="block text-sm font-medium" htmlFor="date">
                 GPX-Datei
@@ -125,6 +124,7 @@ const Form = () => {
               </div>
             </div>
 
+            {/* Datum */}
             <div>
               <label className="block text-sm font-medium" htmlFor="date">
                 Tag
@@ -140,6 +140,7 @@ const Form = () => {
               </div>
             </div>
 
+            {/* Titel */}
             <div>
               <label className="block text-sm font-medium" htmlFor="title">
                 Titel
@@ -152,6 +153,7 @@ const Form = () => {
               />
             </div>
 
+            {/* Text */}
             <div>
               <label className="block text-sm font-medium" htmlFor="text">
                 Text
@@ -162,36 +164,6 @@ const Form = () => {
                 onChange={(e) => setBody(e.target.value)}
                 rows={10}
               />
-            </div>
-
-            <div className="flex items-center">
-              <label className="block text-sm font-medium" htmlFor="text">
-                Ausgaben
-              </label>
-              <input
-                type="number"
-                name="title"
-                value={payment}
-                onChange={(e) => setPayment(+e.target.value)}
-                className="mx-2"
-              />
-              <button
-                className="btn mx-2"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPayments((oldArray) => [...oldArray, payment]);
-                }}
-              >
-                Add
-              </button>
-            </div>
-
-            <div>
-              <ul>
-                {payments.map((payment, index) => (
-                  <li key={index}>{payment}</li>
-                ))}
-              </ul>
             </div>
 
             <button type="submit" className="btn">
