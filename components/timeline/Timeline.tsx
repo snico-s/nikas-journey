@@ -10,10 +10,17 @@ type Props = {
   travelDays: TravelDayWithRoute[];
   startDate: Date | undefined;
   onClick: Dispatch<SetStateAction<string | null>>;
+  onHover: Dispatch<SetStateAction<string | null>>;
   selected: string | null;
 };
 
-function Timeline({ travelDays, startDate, onClick, selected }: Props) {
+function Timeline({
+  travelDays,
+  startDate,
+  onClick,
+  onHover,
+  selected,
+}: Props) {
   const itemEls = useRef({});
   const length = travelDays.length;
 
@@ -37,6 +44,7 @@ function Timeline({ travelDays, startDate, onClick, selected }: Props) {
           startDate={startDate}
           selected={selected == "" + travelDay.id}
           onClick={onClick}
+          onHover={onHover}
           last={index + 1 === length}
           first={index === 0}
           // ref={(element) => (itemEls.current[index] = element)}

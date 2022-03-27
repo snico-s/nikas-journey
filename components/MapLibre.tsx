@@ -38,12 +38,14 @@ type Props = {
   route: TravelDayWithRoute[];
   onClick: Dispatch<SetStateAction<string | null>>;
   selected: string | null;
+  hovered: string | null;
 };
 
-function MapLibre({ route, onClick, selected }: Props) {
+function MapLibre({ route, onClick, selected, hovered }: Props) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const prevSelected: string | null | undefined = usePrevious(selected);
+  const prevHoverd: string | null | undefined = usePrevious(hovered);
   const [API_KEY] = useState("9V8S1PVf6CfINuabJsSA");
 
   useEffect(() => {
@@ -166,6 +168,20 @@ function MapLibre({ route, onClick, selected }: Props) {
       padding: 20,
     });
   }, [selected]);
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    if (prevHoverd) {
+      map.current.setPaintProperty(prevHoverd, "line-color", "#888");
+    }
+
+    if (hovered) map.current.setPaintProperty(hovered, "line-color", "#65d800");
+
+    if (selected) {
+      map.current.setPaintProperty(selected, "line-color", "#F7455D");
+    }
+  }, [hovered, selected]);
 
   return (
     <div className="relative w-full h-(screen-320) md:h-(screen-20)">

@@ -16,9 +16,8 @@ type Props = {
 
 function RoutePage({ travelDays, startDate }: Props) {
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
+  const [hoveredRoute, setHoverRoute] = useState<string | null>(null);
   const [timeLineData, setTimeLineData] = useState([{}]);
-
-  console.log(travelDays);
 
   return (
     <div>
@@ -34,6 +33,7 @@ function RoutePage({ travelDays, startDate }: Props) {
           route={travelDays}
           onClick={setSelectedRoute}
           selected={selectedRoute}
+          hovered={hoveredRoute}
         />
         <div className="bg-white w-full h-80 overflow-y-auto md:h-full">
           <Timeline
@@ -41,6 +41,7 @@ function RoutePage({ travelDays, startDate }: Props) {
             startDate={startDate}
             selected={selectedRoute}
             onClick={setSelectedRoute}
+            onHover={setHoverRoute}
           />
         </div>
       </div>

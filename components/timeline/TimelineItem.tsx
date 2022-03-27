@@ -1,6 +1,12 @@
 import { Route, TravelDay } from "@prisma/client";
 import moment from "moment";
-import React, { useRef, useEffect, Dispatch, SetStateAction } from "react";
+import React, {
+  useRef,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  useState,
+} from "react";
 
 interface TravelDayWithRoute extends TravelDay {
   route: Route[];
@@ -13,6 +19,16 @@ type Props = {
   last: boolean;
   first: boolean;
   onClick: Dispatch<SetStateAction<string | null>>;
+  onHover: Dispatch<SetStateAction<string | null>>;
+};
+
+const ReadMore: React.FC = ({ children }) => {
+  const text = children as string;
+  const [isReadMore, setIsReadMore] = useState(true);
+  const toggleReadMore = () => {
+    setIsReadMore(!isReadMore);
+  };
+  return <p className="text"></p>;
 };
 
 function TimelineItem({
@@ -22,14 +38,19 @@ function TimelineItem({
   last,
   first,
   onClick,
+  onHover,
 }: Props) {
+  const [isReadMore, setIsReadMore] = useState(true);
+  const toggleReadMore = () => {
+    setIsReadMore(!isReadMore);
+  };
   const myRef = useRef<HTMLLIElement>(null);
   // Destructure props
   // Destructure Item-Data
   const { date, title, body, route } = travelDay;
 
   let day = moment(date).diff(moment(startDate), "days");
-  if (day > 0) day++;
+  if (day >= 0) day++;
 
   const jsDate = new Date(date);
 
@@ -51,10 +72,14 @@ function TimelineItem({
     <li
       className="relative mb-2 last:mb-0 dark:border-gray-700"
       onClick={() => {
-        if (!route) return;
-        console.log(route[0].id);
-        console.log(route);
         onClick((route[0].travelDayId + "") as string);
+      }}
+      onMouseOver={() => {
+        onHover((route[0].travelDayId + "") as string);
+      }}
+      onMouseLeave={() => {
+        console.log("leave");
+        onHover(null);
       }}
       ref={myRef}
       id={"" + route[0].id}
@@ -101,28 +126,32 @@ function TimelineItem({
 
         {/* Content */}
         <p className="mb-4 pl-2 text-base font-normal text-gray-500 dark:text-gray-400">
-          {body}
+          {isReadMore ? body!.slice(0, 250) + " ..." : body}
+          <div className="mt-4">
+            <button
+              onClick={toggleReadMore}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-200 focus:text-blue-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            >
+              {isReadMore ? "Weiter lesen" : "Weniger"}
+              {isReadMore ? (
+                <svg
+                  className="w-3 h-3 ml-2"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              ) : (
+                ""
+              )}
+            </button>
+          </div>
         </p>
-
-        {/* Read more Button */}
-        <a
-          href="#"
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-        >
-          Weiter lesen
-          <svg
-            className="w-3 h-3 ml-2"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            ></path>
-          </svg>
-        </a>
       </div>
     </li>
   );
