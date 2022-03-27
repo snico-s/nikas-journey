@@ -1,22 +1,26 @@
+import { Route, TravelDay } from "@prisma/client";
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import TimelineItem from "./TimelineItem";
 
+interface TravelDayWithRoute extends TravelDay {
+  route: Route[];
+}
+
 type Props = {
-  data: Array<routeData> | [];
+  travelDays: TravelDayWithRoute[];
+  startDate: Date | undefined;
   onClick: Dispatch<SetStateAction<string | null>>;
   selected: string | null;
 };
 
-function Timeline({ data, onClick, selected }: Props) {
+function Timeline({ travelDays, startDate, onClick, selected }: Props) {
   const itemEls = useRef({});
-
-  const length = data.length;
+  const length = travelDays.length;
 
   useEffect(() => {
-    console.log(data);
     if (!selected) return;
     const el = document.getElementById("" + selected);
-    console.log(el);
+
     if (!el) return;
     el.scrollIntoView({
       behavior: "smooth",
@@ -26,11 +30,12 @@ function Timeline({ data, onClick, selected }: Props) {
 
   return (
     <ol className="relativ p-2 bg-white dark:bg-black">
-      {data.map((item, index) => (
+      {travelDays.map((travelDay, index) => (
         <TimelineItem
-          key={item.id}
-          data={item}
-          selected={selected === item.route?.id}
+          key={travelDay.id}
+          travelDay={travelDay}
+          startDate={startDate}
+          selected={selected == "" + travelDay.id}
           onClick={onClick}
           last={index + 1 === length}
           first={index === 0}

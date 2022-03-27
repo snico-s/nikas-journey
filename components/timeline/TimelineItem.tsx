@@ -1,20 +1,35 @@
+import { Route, TravelDay } from "@prisma/client";
+import moment from "moment";
 import React, { useRef, useEffect, Dispatch, SetStateAction } from "react";
 
+interface TravelDayWithRoute extends TravelDay {
+  route: Route[];
+}
+
 type Props = {
-  data: routeData;
+  travelDay: TravelDayWithRoute;
+  startDate: Date | undefined;
   selected: boolean;
   last: boolean;
   first: boolean;
   onClick: Dispatch<SetStateAction<string | null>>;
 };
 
-function TimelineItem({ data, selected, last, first, onClick }: Props) {
+function TimelineItem({
+  travelDay,
+  startDate,
+  selected,
+  last,
+  first,
+  onClick,
+}: Props) {
   const myRef = useRef<HTMLLIElement>(null);
   // Destructure props
   // Destructure Item-Data
-  const { date, title, text, route } = data;
+  const { date, title, body, route } = travelDay;
 
-  const day = 3;
+  let day = moment(date).diff(moment(startDate), "days");
+  if (day > 0) day++;
 
   const jsDate = new Date(date);
 
@@ -37,11 +52,12 @@ function TimelineItem({ data, selected, last, first, onClick }: Props) {
       className="relative mb-2 last:mb-0 dark:border-gray-700"
       onClick={() => {
         if (!route) return;
-        if (!route.id) return;
-        onClick("" + route?.id);
+        console.log(route[0].id);
+        console.log(route);
+        onClick((route[0].travelDayId + "") as string);
       }}
       ref={myRef}
-      id={"" + route?.id}
+      id={"" + route[0].id}
     >
       {/* Line */}
       <div
@@ -77,14 +93,17 @@ function TimelineItem({ data, selected, last, first, onClick }: Props) {
           <time className="text-sm"> - {dateString}</time>
           <span className="absolute text-sm right-2">70 km</span>
         </div>
+
         {/* Title */}
         <h3 className="pl-2 text-lg font-semibold text-gray-900 dark:text-white">
           {title}
         </h3>
+
         {/* Content */}
         <p className="mb-4 pl-2 text-base font-normal text-gray-500 dark:text-gray-400">
-          {text}
+          {body}
         </p>
+
         {/* Read more Button */}
         <a
           href="#"

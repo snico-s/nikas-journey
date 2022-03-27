@@ -11,9 +11,10 @@ interface TravelDayWithRoute extends TravelDay {
 
 type Props = {
   travelDays: TravelDayWithRoute[];
+  startDate: Date | undefined;
 };
 
-function RoutePage({ travelDays }: Props) {
+function RoutePage({ travelDays, startDate }: Props) {
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
   const [timeLineData, setTimeLineData] = useState([{}]);
 
@@ -36,7 +37,8 @@ function RoutePage({ travelDays }: Props) {
         />
         <div className="bg-white w-full h-80 overflow-y-auto md:h-full">
           <Timeline
-            data={travelDays}
+            travelDays={travelDays}
+            startDate={startDate}
             selected={selectedRoute}
             onClick={setSelectedRoute}
           />
@@ -78,12 +80,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     (travelDay) => travelDay.travelDays
   );
 
+  const startDate = data?.routeColleaction.startDate.toDateString();
+
   const travelDaysParsed = JSON.parse(JSON.stringify(travelDays));
   console.log("hier");
   console.log(travelDays);
 
   // Pass data to the page via props
-  return { props: { travelDays: travelDaysParsed } };
+  return { props: { travelDays: travelDaysParsed, startDate } };
 };
 
 export default RoutePage;
