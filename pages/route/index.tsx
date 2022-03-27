@@ -40,6 +40,7 @@ function RoutePage({ travelDays, startDate }: Props) {
             travelDays={travelDays}
             startDate={startDate}
             selected={selectedRoute}
+            hovered={hoveredRoute}
             onClick={setSelectedRoute}
             onHover={setHoverRoute}
           />

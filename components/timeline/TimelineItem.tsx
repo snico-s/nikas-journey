@@ -16,6 +16,7 @@ type Props = {
   travelDay: TravelDayWithRoute;
   startDate: Date | undefined;
   selected: boolean;
+  hovered: boolean;
   last: boolean;
   first: boolean;
   onClick: Dispatch<SetStateAction<string | null>>;
@@ -35,6 +36,7 @@ function TimelineItem({
   travelDay,
   startDate,
   selected,
+  hovered,
   last,
   first,
   onClick,
@@ -81,6 +83,9 @@ function TimelineItem({
         console.log("leave");
         onHover(null);
       }}
+      onTouchStart={() => {
+        onHover((route[0].travelDayId + "") as string);
+      }}
       ref={myRef}
       id={"" + route[0].id}
     >
@@ -92,25 +97,24 @@ function TimelineItem({
         ${last ? "h-(timeline-end)" : ""} 
         ${
           selected
-            ? "bg-green-500 dark:bg-white z-20"
+            ? "bg-green-600 dark:bg-white z-20"
             : "bg-gray-500 dark:bg-gray-400 z-10"
         }`}
       ></div>
 
       {/* Point */}
-      {selected ? (
-        <div className="mt-3 z-20 absolute w-3.5 h-3.5 bg-gray-100 rounded-full -left-1.5 border dark:bg-white"></div>
-      ) : (
-        <div className="mt-3 z-20 absolute w-3.5 h-3.5 bg-gray-100 rounded-full -left-1.5 border dark:bg-gray-300"></div>
-      )}
+
+      <div
+        className={`mt-3 z-20 absolute w-3.5 h-3.5 bg-gray-100 rounded-full -left-1.5 border dark:bg-white 
+        ${selected ? "bg-green-600" : ""} ${hovered ? "bg-green-400" : ""}`}
+      ></div>
 
       {/* Content-Container */}
       <div
-        className={`ml-4 rounded-md p-2 ${
-          selected
-            ? "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
-            : "hover:bg-gray-200 dark:hover:bg-gray-700"
-        }`}
+        className={`ml-4 rounded-md p-2 
+        ${selected ? "bg-gray-100 dark:bg-gray-800" : ""} 
+        ${hovered ? "bg-gray-200 dark:bg-gray-700" : ""}
+        `}
       >
         {/* Header */}
         <div className="relative mb-1 leading-none font-normal text-base text-gray-400 dark:text-gray-400">
@@ -130,7 +134,7 @@ function TimelineItem({
           <div className="mt-4">
             <button
               onClick={toggleReadMore}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-200 focus:text-blue-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 dark:focus:ring-blue-200 dark:focus:text-blue-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
             >
               {isReadMore ? "Weiter lesen" : "Weniger"}
               {isReadMore ? (

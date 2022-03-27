@@ -12,6 +12,7 @@ type Props = {
   onClick: Dispatch<SetStateAction<string | null>>;
   onHover: Dispatch<SetStateAction<string | null>>;
   selected: string | null;
+  hovered: string | null;
 };
 
 function Timeline({
@@ -20,6 +21,7 @@ function Timeline({
   onClick,
   onHover,
   selected,
+  hovered,
 }: Props) {
   const itemEls = useRef({});
   const length = travelDays.length;
@@ -43,6 +45,7 @@ function Timeline({
           travelDay={travelDay}
           startDate={startDate}
           selected={selected == "" + travelDay.id}
+          hovered={hovered == "" + travelDay.id}
           onClick={onClick}
           onHover={onHover}
           last={index + 1 === length}

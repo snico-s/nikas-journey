@@ -162,7 +162,7 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
       map.current.setPaintProperty(prevSelected, "line-color", "#888");
     }
 
-    map.current.setPaintProperty(selected, "line-color", "#F7455D");
+    map.current.setPaintProperty(selected, "line-color", "#16a34a");
 
     map.current.fitBounds(bounds, {
       padding: 20,
@@ -176,10 +176,12 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
       map.current.setPaintProperty(prevHoverd, "line-color", "#888");
     }
 
-    if (hovered) map.current.setPaintProperty(hovered, "line-color", "#65d800");
+    // color tailwind green-400
+    if (hovered) map.current.setPaintProperty(hovered, "line-color", "#4ade80");
 
     if (selected) {
-      map.current.setPaintProperty(selected, "line-color", "#F7455D");
+      // color tailwind green-600
+      map.current.setPaintProperty(selected, "line-color", "#16a34a");
     }
   }, [hovered, selected]);
 
