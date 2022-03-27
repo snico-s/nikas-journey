@@ -16,6 +16,10 @@ Table TimeLine {
   routeColleaction RouteColleaction [not null]
   userId Int [not null]
   users User [not null]
+
+  indexes {
+    (userId, name) [unique]
+  }
 }
 
 Table Post {
@@ -39,12 +43,12 @@ Table RouteColleaction {
 
 Table CollectionDays {
   routeCollectionId Int [not null]
-  travaldayId Int [not null]
-  collection RouteColleaction [not null]
-  travaledays TravelDay [not null]
+  travelDayId Int [not null]
+  routeCollection RouteColleaction [not null]
+  travelDays TravelDay [not null]
 
   indexes {
-    (routeCollectionId, travaldayId) [pk]
+    (routeCollectionId, travelDayId) [pk]
   }
 }
 
@@ -96,7 +100,7 @@ Ref: Post.collectionId > RouteColleaction.id
 
 Ref: CollectionDays.routeCollectionId > RouteColleaction.id
 
-Ref: CollectionDays.travaldayId > TravelDay.id
+Ref: CollectionDays.travelDayId > TravelDay.id
 
 Ref: Route.travelDayId > TravelDay.id
 

@@ -1,18 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import MapLibre from "../../components/MapLibre";
 import Timeline from "../../components/timeline/Timeline";
 import { GetServerSideProps } from "next";
-import Route from "../../models/Route";
-import dbConnect from "../../lib/dbConnect";
+import { PrismaClient, Route, TravelDay } from "@prisma/client";
+
+interface TravelDayWithRoute extends TravelDay {
+  route: Route[];
+}
 
 type Props = {
-  routes: Array<routeData> | [];
+  travelDays: TravelDayWithRoute[];
 };
 
-function RoutePage({ routes }: Props) {
+function RoutePage({ travelDays }: Props) {
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
   const [timeLineData, setTimeLineData] = useState([{}]);
+
+  console.log(travelDays);
 
   return (
     <div>
@@ -25,13 +30,13 @@ function RoutePage({ routes }: Props) {
       {/* Content */}
       <div className="md:flex h-(screen-20)">
         <MapLibre
-          route={routes}
+          route={travelDays}
           onClick={setSelectedRoute}
           selected={selectedRoute}
         />
         <div className="bg-white w-full h-80 overflow-y-auto md:h-full">
           <Timeline
-            data={routes}
+            data={travelDays}
             selected={selectedRoute}
             onClick={setSelectedRoute}
           />
@@ -42,14 +47,43 @@ function RoutePage({ routes }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  await dbConnect();
-  const data: Array<routeData> = await Route.find({});
-  console.log(typeof data);
-  const routes = JSON.parse(JSON.stringify(data));
-  console.log(typeof routes);
+  const prisma = new PrismaClient();
+
+  const data = await prisma.timeLine.findUnique({
+    where: {
+      userId_name: {
+        userId: 1,
+        name: "main",
+      },
+    },
+    include: {
+      routeColleaction: {
+        include: {
+          collectiondays: {
+            include: {
+              travelDays: {
+                include: {
+                  payments: true,
+                  route: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const travelDays = data?.routeColleaction.collectiondays.map(
+    (travelDay) => travelDay.travelDays
+  );
+
+  const travelDaysParsed = JSON.parse(JSON.stringify(travelDays));
+  console.log("hier");
+  console.log(travelDays);
 
   // Pass data to the page via props
-  return { props: { routes } };
+  return { props: { travelDays: travelDaysParsed } };
 };
 
 export default RoutePage;

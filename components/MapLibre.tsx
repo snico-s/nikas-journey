@@ -7,9 +7,35 @@ import React, {
 } from "react";
 import maplibregl from "maplibre-gl";
 import usePrevious from "../lib/usePrevious";
+import { LineString, MultiLineString } from "geojson";
+import { Prisma, Route, TravelDay } from "@prisma/client";
+
+const makeGeoJson = (
+  id: string | number,
+  type: string,
+  coordinates: Prisma.JsonValue,
+  properties: Prisma.JsonValue
+) => {
+  const geoJson = {
+    type: "Feature",
+    id: "" + id,
+    geometry: {
+      type,
+      coordinates,
+    },
+    properties,
+  } as GeoJSON.Feature<MultiLineString>;
+  console.log("makeGeoJson");
+  console.log(geoJson);
+  return geoJson;
+};
+
+interface TravelDayWithRoute extends TravelDay {
+  route: Route[];
+}
 
 type Props = {
-  route: Array<routeData>;
+  route: TravelDayWithRoute[];
   onClick: Dispatch<SetStateAction<string | null>>;
   selected: string | null;
 };
@@ -41,16 +67,23 @@ function MapLibre({ route, onClick, selected }: Props) {
       map.current.on("load", () => {
         // Add GeoJson
         route.map((routeitem) => {
-          console.log(routeitem.route);
-          map.current!.addSource(routeitem.route?.id! as string, {
+          const geoJsonRoute = makeGeoJson(
+            routeitem.route[0].travelDayId!,
+            routeitem.route[0].type,
+            routeitem.route[0].coordinates,
+            routeitem.route[0].properties
+          );
+
+          if (!map.current) return;
+          map.current.addSource(geoJsonRoute.id as string, {
             type: "geojson",
-            data: routeitem.route,
+            data: geoJsonRoute,
           });
 
           map.current!.addLayer({
-            id: routeitem._id! as string,
+            id: geoJsonRoute.id as string,
             type: "line",
-            source: routeitem.route?.id! as string,
+            source: geoJsonRoute.id as string,
             layout: {
               "line-join": "round",
               "line-cap": "round",
@@ -61,27 +94,31 @@ function MapLibre({ route, onClick, selected }: Props) {
             },
           });
 
-          map.current!.on(
-            "mousemove",
-            routeitem.route?.id! as string,
-            function (e) {
-              console.log(e);
-              if (!e.features) return;
-              // @ts-ignore
-              onClick(e.features[0].layer.id);
-            }
-          );
+          // map.current.on("mousemove", geoJsonRoute.id as string, function (e) {
+          //   console.log(e);
+          //   if (!e.features) return;
+          //   // @ts-ignore
+          //   onClick(e.features[0].layer.id as string);
+          // });
 
-          map.current!.on(
-            "touchstart",
-            routeitem.route?.id! as string,
-            function (e) {
-              console.log(e);
-              if (!e.features) return;
-              // @ts-ignore
-              onClick(e.features[0].layer.id);
-            }
-          );
+          // Change the cursor to a pointer when the mouse is over the places layer.
+          map.current.on("mouseenter", geoJsonRoute.id as string, function () {
+            if (!map.current) return;
+            map.current.getCanvas().style.cursor = "pointer";
+          });
+
+          // Change it back to a pointer when it leaves.
+          map.current.on("mouseleave", geoJsonRoute.id as string, function () {
+            if (!map.current) return;
+            map.current.getCanvas().style.cursor = "";
+          });
+
+          map.current.on("click", geoJsonRoute.id as string, function (e) {
+            console.log(e);
+            if (!e.features) return;
+            // @ts-ignore
+            onClick(e.features[0].id as string);
+          });
         });
       });
     }
@@ -89,16 +126,33 @@ function MapLibre({ route, onClick, selected }: Props) {
 
   useEffect(() => {
     if (!selected || !map.current) return;
-    const selectedRoute = route.find((data) => data._id === selected);
+    const selectedRoute = route.find((routeItem) => {
+      const id = "" + routeItem.id;
+      return id == selected;
+    });
 
     if (!selectedRoute?.route) return;
-    const coordinates = selectedRoute?.route.geometry.coordinates;
+
+    const geoJsonRoute = makeGeoJson(
+      selectedRoute.route[0].travelDayId!,
+      selectedRoute.route[0].type,
+      selectedRoute.route[0].coordinates,
+      selectedRoute.route[0].properties
+    );
+
+    const coordinates: Prisma.JsonValue = selectedRoute?.route[0].coordinates;
+    console.log(coordinates);
 
     // Create a 'LngLatBounds' with both corners at the first coordinate.
-    const bounds = new maplibregl.LngLatBounds(coordinates[0], coordinates[0]);
+    if (!coordinates) return;
+    const bounds = new maplibregl.LngLatBounds(
+      geoJsonRoute.geometry.coordinates[0],
+      geoJsonRoute.geometry.coordinates[0]
+    );
 
     // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
-    for (const coord of coordinates) {
+    for (const coord of geoJsonRoute.geometry.coordinates) {
+      // @ts-ignore
       bounds.extend(coord);
     }
 
@@ -107,7 +161,6 @@ function MapLibre({ route, onClick, selected }: Props) {
     }
 
     map.current.setPaintProperty(selected, "line-color", "#F7455D");
-    console.log(map.current);
 
     map.current.fitBounds(bounds, {
       padding: 20,

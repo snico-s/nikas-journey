@@ -30,9 +30,7 @@ export default async function handler(
     case "POST":
       try {
         // const route: GeoJSON.Feature<LineString> = req.body.route;
-        let travelDay: Prisma.TravelDayCreateInput;
-
-        travelDay = {
+        let travelDay: Prisma.TravelDayCreateInput = {
           title: req.body.title,
           date: new Date(req.body.date),
           body: req.body.body,
@@ -55,6 +53,26 @@ export default async function handler(
 
         const createTravelDay = await prisma.travelDay.create({
           data: travelDay,
+        });
+
+        const timeline = await prisma.timeLine.update({
+          where: {
+            userId_name: {
+              name: "main",
+              userId: 1,
+            },
+          },
+          data: {
+            routeColleaction: {
+              update: {
+                collectiondays: {
+                  create: {
+                    travelDayId: createTravelDay.id,
+                  },
+                },
+              },
+            },
+          },
         });
 
         res.status(201).json({ success: true, data: createTravelDay });

@@ -30,6 +30,8 @@ model TimeLine {
   routeColleaction RouteColleaction @relation(fields: [collectionId], references: [id])
   userId           Int
   users            User             @relation(fields: [userId], references: [id])
+
+  @@unique([userId, name])
 }
 
 model Post {
@@ -55,11 +57,11 @@ model RouteColleaction {
 
 model CollectionDays {
   routeCollectionId Int
-  travaldayId       Int
-  collection        RouteColleaction @relation(fields: [routeCollectionId], references: [id])
-  travaledays       TravelDay        @relation(fields: [travaldayId], references: [id])
+  travelDayId       Int
+  routeCollection   RouteColleaction @relation(fields: [routeCollectionId], references: [id])
+  travelDays        TravelDay        @relation(fields: [travelDayId], references: [id])
 
-  @@id([routeCollectionId, travaldayId])
+  @@id([routeCollectionId, travelDayId])
 }
 
 model TravelDay {

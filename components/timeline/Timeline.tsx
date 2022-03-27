@@ -28,7 +28,7 @@ function Timeline({ data, onClick, selected }: Props) {
     <ol className="relativ p-2 bg-white dark:bg-black">
       {data.map((item, index) => (
         <TimelineItem
-          key={item._id}
+          key={item.id}
           data={item}
           selected={selected === item.route?.id}
           onClick={onClick}
