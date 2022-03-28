@@ -25,8 +25,6 @@ const makeGeoJson = (
     },
     properties,
   } as GeoJSON.Feature<MultiLineString>;
-  console.log("makeGeoJson");
-  console.log(geoJson);
   return geoJson;
 };
 
@@ -68,9 +66,12 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
 
       map.current.on("load", () => {
         // Add GeoJson
-        route.map((routeitem) => {
+        console.log(route);
+        route.forEach((routeitem) => {
+          if (!routeitem.route[0] || !routeitem.route[0].travelDayId) return;
+
           const geoJsonRoute = makeGeoJson(
-            routeitem.route[0].travelDayId!,
+            routeitem.route[0].travelDayId,
             routeitem.route[0].type,
             routeitem.route[0].coordinates,
             routeitem.route[0].properties
@@ -97,7 +98,6 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
           });
 
           // map.current.on("mousemove", geoJsonRoute.id as string, function (e) {
-          //   console.log(e);
           //   if (!e.features) return;
           //   // @ts-ignore
           //   onClick(e.features[0].layer.id as string);
@@ -116,7 +116,6 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
           });
 
           map.current.on("click", geoJsonRoute.id as string, function (e) {
-            console.log(e);
             if (!e.features) return;
             // @ts-ignore
             onClick(e.features[0].id as string);
@@ -135,6 +134,7 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
 
     if (!selectedRoute?.route) return;
 
+    if (!selectedRoute.route[0] || !selectedRoute.route[0].travelDayId) return;
     const geoJsonRoute = makeGeoJson(
       selectedRoute.route[0].travelDayId!,
       selectedRoute.route[0].type,
@@ -143,7 +143,6 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
     );
 
     const coordinates: Prisma.JsonValue = selectedRoute?.route[0].coordinates;
-    console.log(coordinates);
 
     // Create a 'LngLatBounds' with both corners at the first coordinate.
     if (!coordinates) return;

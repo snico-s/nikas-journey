@@ -37,22 +37,19 @@ export default async function handler(
 
     case "PUT" /* Edit a model by its ID */:
       try {
+        const { date, title, body, distance } = req.body.travelDay;
         const travelDay = await prisma.travelDay.update({
           where: {
             id: +id,
           },
           data: {
-            title: req.body.title,
-            date: new Date(req.body.date),
-            body: req.body.body,
-            distance: req.body.distance,
-            payments: req.body.payments,
+            title: title,
+            date: new Date(date),
+            body: body,
+            distance: distance,
           },
         });
 
-        if (!travelDay) {
-          return res.status(400).json({ success: false });
-        }
         res.status(200).json({ success: true, data: travelDay });
       } catch (error) {
         res.status(400).json({ success: false });
@@ -78,3 +75,11 @@ export default async function handler(
       break;
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb", // Set desired value here
+    },
+  },
+};

@@ -23,15 +23,6 @@ type Props = {
   onHover: Dispatch<SetStateAction<string | null>>;
 };
 
-const ReadMore: React.FC = ({ children }) => {
-  const text = children as string;
-  const [isReadMore, setIsReadMore] = useState(true);
-  const toggleReadMore = () => {
-    setIsReadMore(!isReadMore);
-  };
-  return <p className="text"></p>;
-};
-
 function TimelineItem({
   travelDay,
   startDate,
@@ -49,7 +40,9 @@ function TimelineItem({
   const myRef = useRef<HTMLLIElement>(null);
   // Destructure props
   // Destructure Item-Data
-  const { date, title, body, route } = travelDay;
+  const { id, date, title, body, route } = travelDay;
+
+  console.log(route);
 
   let day = moment(date).diff(moment(startDate), "days");
   if (day >= 0) day++;
@@ -60,34 +53,24 @@ function TimelineItem({
     month: "long",
   }).format(jsDate)} ${jsDate?.getFullYear()}`;
 
-  useEffect(() => {
-    if (!myRef.current) throw Error("divRef is not assigned");
-
-    // // if (selected === -1) return;
-    // myRef.current.scrollIntoView({
-    //   behavior: "smooth",
-    // });
-    const topPos = myRef.current.offsetTop;
-  }, [selected]);
-
   return (
     <li
       className="relative mb-2 last:mb-0 dark:border-gray-700"
       onClick={() => {
-        onClick((route[0].travelDayId + "") as string);
+        onClick((id + "") as string);
       }}
       onMouseOver={() => {
-        onHover((route[0].travelDayId + "") as string);
+        onHover((id + "") as string);
       }}
       onMouseLeave={() => {
         console.log("leave");
         onHover(null);
       }}
       onTouchStart={() => {
-        onHover((route[0].travelDayId + "") as string);
+        onHover((id + "") as string);
       }}
       ref={myRef}
-      id={"" + route[0].id}
+      id={"" + id}
     >
       {/* Line */}
       <div

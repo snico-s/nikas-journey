@@ -86,7 +86,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const travelDaysParsed = JSON.parse(JSON.stringify(travelDays));
   console.log("hier");
-  console.log(travelDays);
+  console.log(travelDaysParsed);
+  console.log("vorbei");
 
   // Pass data to the page via props
   return { props: { travelDays: travelDaysParsed, startDate } };
