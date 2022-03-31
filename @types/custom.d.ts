@@ -1,3 +1,5 @@
+import { TravelDay } from "@prisma/client";
+
 type routeData = {
   _id?: string;
   date: string;
@@ -27,4 +29,8 @@ interface mymaplibre extends maplibregl.Map {
     control: IControl | MapboxDraw,
     position?: maplibregl.ControlPosition
   ): this;
+}
+
+interface TravelDayWithRoute extends TravelDay {
+  route: Route[];
 }

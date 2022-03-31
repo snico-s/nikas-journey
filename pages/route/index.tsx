@@ -3,11 +3,8 @@ import Head from "next/head";
 import MapLibre from "../../components/MapLibre";
 import Timeline from "../../components/timeline/Timeline";
 import { GetServerSideProps } from "next";
-import { PrismaClient, Route, TravelDay } from "@prisma/client";
-
-interface TravelDayWithRoute extends TravelDay {
-  route: Route[];
-}
+import { PrismaClient } from "@prisma/client";
+import { TravelDayWithRoute } from "../../@types/custom";
 
 type Props = {
   travelDays: TravelDayWithRoute[];
@@ -82,9 +79,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     (travelDay) => travelDay.travelDays
   );
 
+  const sortedTravelDay = travelDays?.sort((a, b) => {
+    return new Date(a.date).getTime() - new Date(b.date).getTime();
+  });
   const startDate = data?.routeColleaction.startDate.toDateString();
 
-  const travelDaysParsed = JSON.parse(JSON.stringify(travelDays));
+  const travelDaysParsed = JSON.parse(JSON.stringify(sortedTravelDay));
   console.log("hier");
   console.log(travelDaysParsed);
   console.log("vorbei");

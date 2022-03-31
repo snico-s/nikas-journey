@@ -1,16 +1,6 @@
-import { Route, TravelDay } from "@prisma/client";
 import moment from "moment";
-import React, {
-  useRef,
-  useEffect,
-  Dispatch,
-  SetStateAction,
-  useState,
-} from "react";
-
-interface TravelDayWithRoute extends TravelDay {
-  route: Route[];
-}
+import React, { useRef, Dispatch, SetStateAction, useState } from "react";
+import { TravelDayWithRoute } from "../../@types/custom";
 
 type Props = {
   travelDay: TravelDayWithRoute;
@@ -113,7 +103,7 @@ function TimelineItem({
 
         {/* Content */}
         <p className="mb-4 pl-2 text-base font-normal text-gray-500 dark:text-gray-400">
-          {isReadMore ? body!.slice(0, 250) + " ..." : body}
+          {isReadMore && body ? body.slice(0, 250) + " ..." : body}
           <div className="mt-4">
             <button
               onClick={toggleReadMore}

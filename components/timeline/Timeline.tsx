@@ -1,10 +1,6 @@
-import { Route, TravelDay } from "@prisma/client";
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { TravelDayWithRoute } from "../../@types/custom";
 import TimelineItem from "./TimelineItem";
-
-interface TravelDayWithRoute extends TravelDay {
-  route: Route[];
-}
 
 type Props = {
   travelDays: TravelDayWithRoute[];

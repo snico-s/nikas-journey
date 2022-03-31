@@ -7,8 +7,9 @@ import React, {
 } from "react";
 import maplibregl from "maplibre-gl";
 import usePrevious from "../lib/usePrevious";
-import { LineString, MultiLineString } from "geojson";
-import { Prisma, Route, TravelDay } from "@prisma/client";
+import { MultiLineString } from "geojson";
+import { Prisma } from "@prisma/client";
+import { TravelDayWithRoute } from "../@types/custom";
 
 const makeGeoJson = (
   id: string | number,
@@ -27,10 +28,6 @@ const makeGeoJson = (
   } as GeoJSON.Feature<MultiLineString>;
   return geoJson;
 };
-
-interface TravelDayWithRoute extends TravelDay {
-  route: Route[];
-}
 
 type Props = {
   route: TravelDayWithRoute[];
@@ -170,6 +167,7 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
 
   useEffect(() => {
     if (!map.current) return;
+    if (!map.current.isStyleLoaded()) return;
 
     if (prevHoverd) {
       map.current.setPaintProperty(prevHoverd, "line-color", "#888");
