@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PrismaClient, RouteColleaction } from "@prisma/client";
+import { PrismaClient, TimeLine } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { TravelDayWithRoute } from "../../@types/custom";
@@ -9,23 +9,17 @@ import TravelDayList from "../../components/TravelDayList/TravelDayList";
 type Props = {
   travelDays: TravelDayWithRoute[];
   travelDaysNotInMain: TravelDayWithRoute[];
-  routeColleactions: RouteColleaction[];
+  timeLines: TimeLine[];
 };
 
-function index({ travelDays, travelDaysNotInMain, routeColleactions }: Props) {
+function index({ travelDays, travelDaysNotInMain, timeLines }: Props) {
   console.log(travelDays);
   return (
     <div className="container mx-auto px-4">
       <h1 className="text-3xl my-2">Liste in Main-Timeline</h1>
-      <TravelDayList
-        travelDays={travelDays}
-        routeColleactions={routeColleactions}
-      />
+      <TravelDayList travelDays={travelDays} timeLines={timeLines} />
       <h1 className="text-3xl my-2">Liste nicht Main-Timeline enthalten</h1>
-      <TravelDayList
-        travelDays={travelDaysNotInMain}
-        routeColleactions={routeColleactions}
-      />
+      <TravelDayList travelDays={travelDaysNotInMain} timeLines={timeLines} />
     </div>
   );
 }
@@ -37,11 +31,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     include: { route: true },
   });
 
-  const routeColleactionsData = await prisma.routeColleaction.findMany();
+  const timeLineData = await prisma.timeLine.findMany();
 
-  const isInMainCollection = await prisma.collectionDays.findMany({
+  const isInMainCollection = await prisma.timeLineHasTravelDays.findMany({
     where: {
-      routeCollectionId: 1, // main
+      timeLineId: 1, // main
     },
     include: {
       travelDays: {
@@ -65,11 +59,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return !isIn;
   });
 
-  const routeColleactions = JSON.parse(JSON.stringify(routeColleactionsData));
+  const timeLines = JSON.parse(JSON.stringify(timeLineData));
   const travelDays = JSON.parse(JSON.stringify(travelDaysInCollection));
   const travelDaysNotInMain = JSON.parse(JSON.stringify(difference));
 
-  return { props: { travelDays, travelDaysNotInMain, routeColleactions } };
+  return { props: { travelDays, travelDaysNotInMain, timeLines } };
 };
 
 export default index;

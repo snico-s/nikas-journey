@@ -58,16 +58,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     },
     include: {
-      routeColleaction: {
+      timeLineHasTravelDays: {
         include: {
-          collectiondays: {
+          travelDays: {
             include: {
-              travelDays: {
-                include: {
-                  payments: true,
-                  route: true,
-                },
-              },
+              payments: true,
+              route: true,
             },
           },
         },
@@ -75,14 +71,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   });
 
-  const travelDays = data?.routeColleaction.collectiondays.map(
+  const travelDays = data?.timeLineHasTravelDays.map(
     (travelDay) => travelDay.travelDays
   );
 
   const sortedTravelDay = travelDays?.sort((a, b) => {
     return new Date(a.date).getTime() - new Date(b.date).getTime();
   });
-  const startDate = data?.routeColleaction.startDate.toDateString();
+  const startDate = data?.startDate.toDateString();
 
   const travelDaysParsed = JSON.parse(JSON.stringify(sortedTravelDay));
   console.log("hier");

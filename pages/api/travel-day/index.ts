@@ -55,25 +55,21 @@ export default async function handler(
           data: travelDay,
         });
 
-        const timeline = await prisma.timeLine.update({
-          where: {
-            userId_name: {
-              name: "main",
-              userId: 1,
-            },
-          },
-          data: {
-            routeColleaction: {
-              update: {
-                collectiondays: {
-                  create: {
-                    travelDayId: createTravelDay.id,
-                  },
-                },
-              },
-            },
-          },
-        });
+        // const timeline = await prisma.timeLine.update({
+        //   where: {
+        //     userId_name: {
+        //       name: "main",
+        //       userId: 1,
+        //     },
+        //   },
+        //   data: {
+        //     timeLineHasTravelDays: {
+        //       create: {
+        //         travelDayId: createTravelDay.id,
+        //       },
+        //     },
+        //   },
+        // });
 
         res.status(201).json({ success: true, data: createTravelDay });
       } catch (error) {

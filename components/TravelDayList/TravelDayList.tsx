@@ -1,4 +1,4 @@
-import { RouteColleaction } from "@prisma/client";
+import { TimeLine } from "@prisma/client";
 import Link from "next/link";
 import React, { useState } from "react";
 import { TravelDayWithRoute } from "../../@types/custom";
@@ -6,14 +6,14 @@ import Modal from "../ui/Modal";
 
 type Props = {
   travelDays: TravelDayWithRoute[];
-  routeColleactions: RouteColleaction[];
+  timeLines: TimeLine[];
 };
 
-const TravelDayList = ({ travelDays, routeColleactions }: Props) => {
+const TravelDayList = ({ travelDays, timeLines }: Props) => {
   const [showAddToCollection, setShowAddToCollection] = useState(false);
   const [showDelete, setShowDeleteModal] = useState(false);
   const [selectedTravelDayId, setSelectedTravelDayId] = useState(0);
-  const [selectedRouteCollection, setSelectedRouteCollection] = useState(1);
+  const [selectedTimeLine, setSelectedTimeLine] = useState(1);
 
   const handleAddToCollection = async () => {
     try {
@@ -25,7 +25,7 @@ const TravelDayList = ({ travelDays, routeColleactions }: Props) => {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ routeCollectionId: selectedRouteCollection }),
+          body: JSON.stringify({ timeLineId: selectedTimeLine }),
         }
       );
 
@@ -91,13 +91,13 @@ const TravelDayList = ({ travelDays, routeColleactions }: Props) => {
           Welcher Collection zuweisen?
           <select
             name="currency"
-            value={selectedRouteCollection}
-            onChange={(e) => setSelectedRouteCollection(+e.target.value)}
+            value={selectedTimeLine}
+            onChange={(e) => setSelectedTimeLine(+e.target.value)}
           >
             <option value={0}>"Bitte Collection auswählen"</option>
-            {routeColleactions.map((routeColleaction) => (
-              <option key={routeColleaction.id} value={routeColleaction.id}>
-                {routeColleaction.name}
+            {timeLines.map((timeLine) => (
+              <option key={timeLine.id} value={timeLine.id}>
+                {timeLine.name}
               </option>
             ))}
           </select>

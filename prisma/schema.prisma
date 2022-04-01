@@ -23,14 +23,15 @@ model User {
 }
 
 model TimeLine {
-  id   Int    @id @default(autoincrement())
-  name String
+  id        Int      @id @default(autoincrement())
+  name      String
+  startDate DateTime
 
-  collectionId     Int
-  routeColleaction RouteColleaction @relation(fields: [collectionId], references: [id])
-  userId           Int
-  users            User             @relation(fields: [userId], references: [id])
+  userId                Int
+  users                 User                    @relation(fields: [userId], references: [id])
+  timeLineHasTravelDays TimeLineHasTravelDays[]
 
+  Post Post[]
   @@unique([userId, name])
 }
 
@@ -40,28 +41,18 @@ model Post {
   body  String
 
   userId           Int
-  user             User             @relation(fields: [userId], references: [id])
-  collectionId     Int
-  routeColleaction RouteColleaction @relation(fields: [collectionId], references: [id])
+  user             User     @relation(fields: [userId], references: [id])
+  timeLineId       Int
+  routeColleaction TimeLine @relation(fields: [timeLineId], references: [id])
 }
 
-model RouteColleaction {
-  id        Int      @id @default(autoincrement())
-  name      String
-  startDate DateTime
+model TimeLineHasTravelDays {
+  timeLineId  Int
+  travelDayId Int
+  timeLine    TimeLine  @relation(fields: [timeLineId], references: [id])
+  travelDays  TravelDay @relation(fields: [travelDayId], references: [id])
 
-  collectiondays CollectionDays[]
-  post           Post[]
-  TimeLine       TimeLine[]
-}
-
-model CollectionDays {
-  routeCollectionId Int
-  travelDayId       Int
-  routeCollection   RouteColleaction @relation(fields: [routeCollectionId], references: [id])
-  travelDays        TravelDay        @relation(fields: [travelDayId], references: [id])
-
-  @@id([routeCollectionId, travelDayId])
+  @@id([timeLineId, travelDayId])
 }
 
 model TravelDay {
@@ -71,9 +62,9 @@ model TravelDay {
   date     DateTime @unique
   distance Decimal?
 
-  collectiondays CollectionDays[]
-  route          Route[]
-  payments       Payment[]
+  timeLineTravelDays TimeLineHasTravelDays[]
+  route              Route[]
+  payments           Payment[]
 }
 
 model Route {

@@ -12,10 +12,11 @@ Table User {
 Table TimeLine {
   id Int [pk, increment]
   name String [not null]
-  collectionId Int [not null]
-  routeColleaction RouteColleaction [not null]
+  startDate DateTime [not null]
   userId Int [not null]
   users User [not null]
+  timeLineHasTravelDays TimeLineHasTravelDays [not null]
+  Post Post [not null]
 
   indexes {
     (userId, name) [unique]
@@ -28,27 +29,18 @@ Table Post {
   body String [not null]
   userId Int [not null]
   user User [not null]
-  collectionId Int [not null]
-  routeColleaction RouteColleaction [not null]
+  timeLineId Int [not null]
+  routeColleaction TimeLine [not null]
 }
 
-Table RouteColleaction {
-  id Int [pk, increment]
-  name String [not null]
-  startDate DateTime [not null]
-  collectiondays CollectionDays [not null]
-  post Post [not null]
-  TimeLine TimeLine [not null]
-}
-
-Table CollectionDays {
-  routeCollectionId Int [not null]
+Table TimeLineHasTravelDays {
+  timeLineId Int [not null]
   travelDayId Int [not null]
-  routeCollection RouteColleaction [not null]
+  timeLine TimeLine [not null]
   travelDays TravelDay [not null]
 
   indexes {
-    (routeCollectionId, travelDayId) [pk]
+    (timeLineId, travelDayId) [pk]
   }
 }
 
@@ -58,7 +50,7 @@ Table TravelDay {
   body String
   date DateTime [unique, not null]
   distance Decimal
-  collectiondays CollectionDays [not null]
+  timeLineTravelDays TimeLineHasTravelDays [not null]
   route Route [not null]
   payments Payment [not null]
 }
@@ -90,17 +82,15 @@ Table Currency {
   payments Payment [not null]
 }
 
-Ref: TimeLine.collectionId > RouteColleaction.id
-
 Ref: TimeLine.userId > User.id
 
 Ref: Post.userId > User.id
 
-Ref: Post.collectionId > RouteColleaction.id
+Ref: Post.timeLineId > TimeLine.id
 
-Ref: CollectionDays.routeCollectionId > RouteColleaction.id
+Ref: TimeLineHasTravelDays.timeLineId > TimeLine.id
 
-Ref: CollectionDays.travelDayId > TravelDay.id
+Ref: TimeLineHasTravelDays.travelDayId > TravelDay.id
 
 Ref: Route.travelDayId > TravelDay.id
 

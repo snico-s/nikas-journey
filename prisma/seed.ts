@@ -10,36 +10,18 @@ async function main() {
     },
   });
 
-  const routeColleaction = await prisma.routeColleaction.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      name: "main",
-      startDate: new Date("2022-04-02"),
-    },
-  });
-
   const timeLine = await prisma.timeLine.upsert({
     where: { id: 1 },
     update: {},
     create: {
       name: "main",
+      startDate: new Date("2022-04-03"),
       users: {
         connectOrCreate: {
           where: { id: 1 },
           create: {
             id: 1,
             name: "Nika",
-          },
-        },
-      },
-      routeColleaction: {
-        connectOrCreate: {
-          where: { id: 1 },
-          create: {
-            id: 1,
-            name: "main",
-            startDate: new Date("2022-04-02"),
           },
         },
       },
@@ -66,7 +48,7 @@ async function main() {
     },
   });
 
-  console.log({ euro, turkishLira, nika, routeColleaction, timeLine });
+  console.log({ euro, turkishLira, nika, timeLine });
 }
 
 main()
