@@ -1,12 +1,19 @@
 import { PrismaClient } from "@prisma/client";
+import { hash } from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
+  const password = process.env.START_PWD;
+  console.log(password);
+
   const nika = await prisma.user.upsert({
     where: { id: 1 },
     update: {},
     create: {
       name: "Nika",
+      email: "nika@mail.de",
+      password: password ? await hash(password, 12) : "",
+      isAdmin: true,
     },
   });
 
@@ -22,6 +29,9 @@ async function main() {
           create: {
             id: 1,
             name: "Nika",
+            email: "nika@mail.de",
+            password: password ? await hash(password, 12) : "",
+            isAdmin: true,
           },
         },
       },

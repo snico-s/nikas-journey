@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import dbConnect from "../../../lib/dbConnect";
 import User from "../../../models/User";
 import { compare, hash } from "bcryptjs";
+import { PrismaClient } from "@prisma/client";
 
 export default NextAuth({
   providers: [
@@ -20,7 +21,11 @@ export default NextAuth({
         // Add logic here to look up the user from the credentials supplied
         // const user = { id: 1, name: "J Smith", email: "jsmith@example.com" };
         try {
-          const user: User = await User.findOne({ email: credentials?.email });
+          const prisma = new PrismaClient();
+
+          const user = await prisma.user.findUnique({
+            where: { email: credentials?.email },
+          });
           console.log(user);
           if (!user) {
             throw new Error("No user found with the email");
@@ -43,4 +48,25 @@ export default NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      // Persist the OAuth access_token to the token right after signin
+      console.log(user);
+      console.log("jwt...................................");
+
+      if (user) {
+        token.isAdmin = user.isAdmin;
+      }
+      return token;
+    },
+    async session({ session, token, user }) {
+      console.log(token);
+      // Send properties to the client, like an access_token from a provider.
+      // session.user.isAdmin = user.isAdmin;
+      session.user.isAdmin = token.isAdmin;
+      console.log(user);
+      console.log("session...................................");
+      return session;
+    },
+  },
 });

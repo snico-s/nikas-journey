@@ -5,6 +5,9 @@
 Table User {
   id Int [pk, increment]
   name String [not null]
+  email String [unique, not null]
+  isAdmin Boolean [not null, default: false]
+  password String [not null]
   posts Post [not null]
   timeLine TimeLine [not null]
 }

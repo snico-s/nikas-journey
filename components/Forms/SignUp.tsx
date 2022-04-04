@@ -4,6 +4,7 @@ type Props = {};
 
 const SignUp = (props: Props) => {
   const [form, setForm] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -48,7 +49,7 @@ const SignUp = (props: Props) => {
   return (
     <>
       <div>
-        <label className="block text-sm font-medium" htmlFor="date">
+        <label className="block text-sm font-medium" htmlFor="email">
           E-Mail
         </label>
         <div className="mt-1">
@@ -56,6 +57,21 @@ const SignUp = (props: Props) => {
             type="text"
             name="email"
             value={form.email}
+            onChange={handleChangeInput}
+            required
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium" htmlFor="name">
+          Name
+        </label>
+        <div className="mt-1">
+          <input
+            type="text"
+            name="name"
+            value={form.name}
             onChange={handleChangeInput}
             required
           />

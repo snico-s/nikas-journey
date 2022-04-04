@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { hash } from "bcryptjs";
-import dbConnect from "../../../lib/dbConnect";
-import User from "../../../models/User";
+import { PrismaClient, User } from "@prisma/client";
 
 type Data = {
   message: string;
@@ -9,27 +8,33 @@ type Data = {
 };
 
 async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  await dbConnect();
+  const prisma = new PrismaClient();
 
   //Only POST mothod is accepted
   if (req.method === "POST") {
-    const { email, password } = req.body;
+    const { email, name, password } = req.body;
+    console.log(email);
     //Validate
     if (!email || !email.includes("@") || !password) {
       res.status(422).json({ message: "Invalid Data" });
       return;
     }
     //Check existing
-    const checkExisting = await User.findOne({ email: email });
+    const checkExisting = await prisma.user.findUnique({
+      where: { email: email },
+    });
     //Send error response if duplicate
     if (checkExisting) {
       res.status(422).json({ message: "User already exists" });
       return;
     }
     try {
-      const user: User = await User.create({
-        email,
-        password: await hash(password, 12),
+      const user = await prisma.user.create({
+        data: {
+          name: name,
+          email: email,
+          password: await hash(password, 12),
+        },
       });
 
       res.status(201).json({ message: "success", data: user });
