@@ -1,24 +1,13 @@
-import React, { ChangeEventHandler, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { mutate } from "swr";
-import { LineString, MultiLineString } from "geojson";
+import { MultiLineString } from "geojson";
 import { gpx } from "@tmcw/togeojson";
-import { TravelDay } from "@prisma/client";
 
 const AddTravelDay = () => {
   const router = useRouter();
   const contentType = "application/json";
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-
-  // const [form, setForm] = useState({
-  //   date: new Date().toISOString().slice(0, 10),
-  //   title: "",
-  //   body: "",
-  //   distance: null,
-  //   route: {},
-  //   payments: [] as number[],
-  // });
 
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [title, setTitle] = useState("");
@@ -89,7 +78,7 @@ const AddTravelDay = () => {
         throw new Error("Status" + res.status);
       }
 
-      router.push("/");
+      router.push("/admin/reise-tage");
     } catch (error) {
       setMessage("Failed to add");
     }

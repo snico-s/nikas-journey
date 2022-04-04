@@ -39,8 +39,7 @@ const EditTravelDay = ({ id }: Props) => {
 
       const travelDays: TravelDay[] = data.data;
       const travelDay = travelDays[0];
-      console.log(travelDays);
-      console.log(travelDay);
+
       setTravelDay({
         id: travelDay.id,
         date: new Date(travelDay.date).toISOString().slice(0, 10),
@@ -115,7 +114,7 @@ const EditTravelDay = ({ id }: Props) => {
         throw new Error("Status" + res.status);
       }
 
-      router.push("/");
+      router.push("/admin/reise-tage");
     } catch (error) {
       setMessage("Failed to add");
     }

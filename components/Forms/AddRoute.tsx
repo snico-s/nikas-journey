@@ -80,7 +80,7 @@ const AddRoute = ({ id }: Props) => {
         throw new Error("Status" + res.status);
       }
 
-      router.push("/");
+      router.push("/admin/reise-tage");
     } catch (error) {
       setMessage("Failed to add");
     }

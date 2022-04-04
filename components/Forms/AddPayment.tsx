@@ -57,7 +57,7 @@ const AddPayment = (props: Props) => {
         throw new Error("Status" + res.status);
       }
 
-      router.push("/reise-tage/ausgaben");
+      router.push("/admin/ausgaben");
     } catch (error) {}
   };
 

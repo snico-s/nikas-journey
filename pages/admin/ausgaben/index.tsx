@@ -1,4 +1,5 @@
 import { Payment, TravelDay } from "@prisma/client";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 interface PaymentWithTravelDay extends Payment {
@@ -31,6 +32,7 @@ const index = (props: Props) => {
 
   return (
     <div>
+      <Link href="/admin/ausgaben/erstellen">Ausgabe hinzufügen</Link>
       <ul>
         {payments.map((payment, index) => (
           <li key={index} className="ml-2 mb-2">
