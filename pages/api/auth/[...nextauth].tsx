@@ -1,8 +1,6 @@
 import NextAuth from "next-auth/next";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import dbConnect from "../../../lib/dbConnect";
-import User from "../../../models/User";
 import { compare, hash } from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 
@@ -16,8 +14,6 @@ export default NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        // await dbConnect();
-
         // Add logic here to look up the user from the credentials supplied
         // const user = { id: 1, name: "J Smith", email: "jsmith@example.com" };
         try {

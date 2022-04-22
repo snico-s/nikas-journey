@@ -1,8 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import dbConnect from "../../../lib/dbConnect";
-import Route from "../../../models/Route";
-import { v4 as uuidv4 } from "uuid";
-import mongoose from "mongoose";
 
 import { PrismaClient, TravelDay } from "@prisma/client";
 
@@ -63,8 +59,6 @@ export default async function handler(
 //   res: NextApiResponse<Data>
 // ) {
 //   const { method } = req;
-
-//   await dbConnect();
 
 //   switch (method) {
 //     case "GET":
