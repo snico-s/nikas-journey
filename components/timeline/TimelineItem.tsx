@@ -30,7 +30,7 @@ function TimelineItem({
   const myRef = useRef<HTMLLIElement>(null);
   // Destructure props
   // Destructure Item-Data
-  const { id, date, title, body, route } = travelDay;
+  const { id, date, title, body, route, distance } = travelDay;
 
   console.log(route);
 
@@ -93,7 +93,7 @@ function TimelineItem({
         <div className="relative mb-1 leading-none font-normal text-base text-gray-400 dark:text-gray-400">
           <span className="font-bold">Tag {day}</span>
           <time className="text-sm"> - {dateString}</time>
-          <span className="absolute text-sm right-2">70 km</span>
+          <span className="absolute text-sm right-2">{distance} km</span>
         </div>
 
         {/* Title */}

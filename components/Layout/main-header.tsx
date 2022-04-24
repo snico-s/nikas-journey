@@ -69,7 +69,7 @@ function MainHeader() {
             isOpen ? classes.open : classes.close
           }`}
         >
-          <li className={`${classes.active}`}>
+          {/* <li className={`${classes.active}`}>
             <Link href="/">Home</Link>
           </li>
           <li>
@@ -80,7 +80,7 @@ function MainHeader() {
           </li>
           <li>
             <Link href="/ausruestung">Ausrüstung</Link>
-          </li>
+          </li> */}
           {!session ? (
             ""
           ) : (

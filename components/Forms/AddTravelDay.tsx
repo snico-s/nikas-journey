@@ -12,7 +12,7 @@ const AddTravelDay = () => {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [distance, setDistance] = useState(0);
+  const [distance, setDistance] = useState(70);
   const [route, setRoute] = useState({});
 
   const handleGpxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,6 +152,19 @@ const AddTravelDay = () => {
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 rows={10}
+              />
+            </div>
+
+            {/* Distanz */}
+            <div>
+              <label className="block text-sm font-medium" htmlFor="distance">
+                Distanz
+              </label>
+              <input
+                type="number"
+                name="distance"
+                value={Number(distance).toString()}
+                onChange={(e) => setDistance(+e.target.value)}
               />
             </div>
 

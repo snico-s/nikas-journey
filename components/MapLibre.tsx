@@ -49,17 +49,13 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
       map.current = new maplibregl.Map({
         container: mapContainer.current,
         style: `https://api.maptiler.com/maps/basic/style.json?key=9V8S1PVf6CfINuabJsSA`,
-        center: [10.524923744378782, 52.240802508845604],
-        zoom: 14,
+        center: [15.176529, 47.406018],
+        zoom: 3,
         // attributionControl: false,
       });
       // Add zoom and rotation controls to the map.
       map.current.addControl(new maplibregl.NavigationControl({}));
       // map.current.addControl(new maplibregl.AttributionControl(), "top-left");
-
-      new maplibregl.Marker({ color: "#FF0000" })
-        .setLngLat([10.524923744378782, 52.240802508845604])
-        .addTo(map.current);
 
       map.current.on("load", () => {
         // Add GeoJson

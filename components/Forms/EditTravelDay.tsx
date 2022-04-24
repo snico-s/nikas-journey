@@ -206,6 +206,21 @@ const EditTravelDay = ({ id }: Props) => {
               />
             </div>
 
+            {/* Distanz */}
+            <div>
+              <label className="block text-sm font-medium" htmlFor="distance">
+                Distanz
+              </label>
+              <input
+                type="number"
+                name="distance"
+                value={Number(travelDay.distance).toString()}
+                onChange={(e) =>
+                  setTravelDay({ ...travelDay, distance: +e.target.value })
+                }
+              />
+            </div>
+
             <button type="submit" className="btn">
               Submit
             </button>
