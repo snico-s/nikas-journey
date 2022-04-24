@@ -82,31 +82,37 @@ function MainHeader() {
             <Link href="/ausruestung">Ausrüstung</Link>
           </li>
           {!session ? (
-            <li>
-              <Link href="/api/auth/signin">
-                <a
-                  onClick={(e: React.MouseEvent<HTMLElement>) => {
-                    e.preventDefault;
-                    signIn();
-                  }}
-                >
-                  Sign In
-                </a>
-              </Link>
-            </li>
+            ""
           ) : (
-            <li>
-              <Link href="/api/auth/signout">
-                <a
-                  onClick={(e: React.MouseEvent<HTMLElement>) => {
-                    e.preventDefault;
-                    signOut();
-                  }}
-                >
-                  Sign Out
-                </a>
-              </Link>
-            </li>
+            // <li>
+            //   <Link href="/api/auth/signin">
+            //     <a
+            //       onClick={(e: React.MouseEvent<HTMLElement>) => {
+            //         e.preventDefault;
+            //         signIn();
+            //       }}
+            //     >
+            //       Sign In
+            //     </a>
+            //   </Link>
+            // </li>
+            <>
+              <li>
+                <Link href="/api/auth/signout">
+                  <a
+                    onClick={(e: React.MouseEvent<HTMLElement>) => {
+                      e.preventDefault;
+                      signOut();
+                    }}
+                  >
+                    Sign Out
+                  </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin">Admin</Link>
+              </li>
+            </>
           )}
         </ul>
       </nav>
