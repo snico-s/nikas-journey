@@ -6,6 +6,7 @@ import React, {
   SetStateAction,
 } from "react";
 import maplibregl from "maplibre-gl";
+import turf from "@turf/turf";
 import usePrevious from "../lib/usePrevious";
 import { MultiLineString } from "geojson";
 import { Prisma } from "@prisma/client";
@@ -14,9 +15,23 @@ import { TravelDayWithRoute } from "../@types/custom";
 const makeGeoJson = (
   id: string | number,
   type: string,
-  coordinates: Prisma.JsonValue,
+  coordinates: Prisma.JsonArray,
   properties: Prisma.JsonValue
 ) => {
+  if (type == "MultiLineString") {
+    const geoJson = {
+      type: "Feature",
+      id: "" + id,
+      geometry: {
+        type,
+        coordinates: coordinates.flat(),
+      },
+      properties,
+    } as GeoJSON.Feature<MultiLineString>;
+
+    return geoJson;
+  }
+
   const geoJson = {
     type: "Feature",
     id: "" + id,
@@ -26,6 +41,7 @@ const makeGeoJson = (
     },
     properties,
   } as GeoJSON.Feature<MultiLineString>;
+
   return geoJson;
 };
 
