@@ -18,20 +18,6 @@ const makeGeoJson = (
   coordinates: Prisma.JsonArray,
   properties: Prisma.JsonValue
 ) => {
-  if (type == "MultiLineString") {
-    const geoJson = {
-      type: "Feature",
-      id: "" + id,
-      geometry: {
-        type,
-        coordinates: coordinates.flat(),
-      },
-      properties,
-    } as GeoJSON.Feature<MultiLineString>;
-
-    return geoJson;
-  }
-
   const geoJson = {
     type: "Feature",
     id: "" + id,
@@ -155,14 +141,14 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
 
     // Create a 'LngLatBounds' with both corners at the first coordinate.
     if (!coordinates) return;
-    const bounds = new maplibregl.LngLatBounds(
-      geoJsonRoute.geometry.coordinates[0],
-      geoJsonRoute.geometry.coordinates[0]
-    );
+
+    const coords = geoJsonRoute.geometry.coordinates.flat();
+
+    const bounds = new maplibregl.LngLatBounds(coords[0], coords[0]);
 
     // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
     for (const coord of geoJsonRoute.geometry.coordinates) {
-      // @ts-ignore
+      //@ts-ignore
       bounds.extend(coord);
     }
 
