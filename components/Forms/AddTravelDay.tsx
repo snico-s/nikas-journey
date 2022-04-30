@@ -72,6 +72,7 @@ const AddTravelDay = () => {
 
   const handleGpxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
+    console.log(target);
 
     if (target.files != null) {
       const file = target.files[0];
