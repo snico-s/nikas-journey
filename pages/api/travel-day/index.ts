@@ -43,9 +43,9 @@ export default async function handler(
             ...travelDay,
             route: {
               create: {
-                type: route.feature.geometry.type,
-                coordinates: route.feature.geometry.coordinates,
-                properties: route.feature.properties,
+                type: route.geometry.type,
+                coordinates: route.geometry.coordinates,
+                properties: route.properties,
               },
             },
           };

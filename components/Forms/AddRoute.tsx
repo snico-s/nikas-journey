@@ -9,6 +9,17 @@ type Props = {
   id: number;
 };
 
+const makeLineString = (feature: GeoJSON.Feature<MultiLineString>) => {
+  return {
+    type: "Feature",
+    geometry: {
+      type: "LineString",
+      coordinates: feature.geometry.coordinates.flat(),
+    },
+    properties: feature.properties,
+  };
+};
+
 const AddRoute = ({ id }: Props) => {
   const router = useRouter();
   const contentType = "application/json";
@@ -37,14 +48,16 @@ const AddRoute = ({ id }: Props) => {
             }
             const type = fc.features[0].geometry.type;
             if (["LineString", "MultiLineString"].includes(type)) {
-              const feature = fc
-                .features[0] as GeoJSON.Feature<MultiLineString>;
+              let feature;
+              if (type === "MultiLineString") {
+                const tmpFeature = fc
+                  .features[0] as GeoJSON.Feature<MultiLineString>;
+                feature = makeLineString(tmpFeature);
+              } else {
+                feature = fc.features[0] as GeoJSON.Feature<LineString>;
+              }
 
-              feature.geometry;
-
-              setRoute({
-                feature,
-              });
+              setRoute(feature);
             }
           }
         }

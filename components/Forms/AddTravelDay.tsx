@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { MultiLineString } from "geojson";
+import { LineString, MultiLineString } from "geojson";
 import { gpx } from "@tmcw/togeojson";
+import maplibregl from "maplibre-gl";
+
+const makeLineString = (feature: GeoJSON.Feature<MultiLineString>) => {
+  return {
+    type: "Feature",
+    geometry: {
+      type: "LineString",
+      coordinates: feature.geometry.coordinates.flat(),
+    },
+    properties: feature.properties,
+  };
+};
 
 const AddTravelDay = () => {
   const router = useRouter();
-  const contentType = "application/json";
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
 
@@ -14,6 +25,50 @@ const AddTravelDay = () => {
   const [body, setBody] = useState("");
   const [distance, setDistance] = useState(70);
   const [route, setRoute] = useState({});
+
+  const mapContainer = useRef<HTMLDivElement | null>(null);
+  const map = useRef<maplibregl.Map | null>(null);
+
+  useEffect(() => {
+    if (map.current) return;
+    if (mapContainer.current !== null) {
+      map.current = new maplibregl.Map({
+        container: mapContainer.current,
+        style: `https://api.maptiler.com/maps/basic/style.json?key=9V8S1PVf6CfINuabJsSA`,
+        center: [15.176529, 47.406018],
+        zoom: 3,
+        // attributionControl: false,
+      });
+      // Add zoom and rotation controls to the map.
+      map.current.addControl(new maplibregl.NavigationControl({}));
+      // map.current.addControl(new maplibregl.AttributionControl(), "top-left");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (map.current == null) return;
+    if (!map.current.isStyleLoaded()) return;
+
+    map.current.addSource("route", {
+      type: "geojson",
+      data: route,
+    });
+    map.current.addLayer({
+      id: "route",
+      type: "line",
+      source: "route",
+      layout: {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      paint: {
+        "line-color": "#888",
+        "line-width": 8,
+      },
+    });
+  }, [route]);
+
+  const contentType = "application/json";
 
   const handleGpxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
@@ -35,14 +90,16 @@ const AddTravelDay = () => {
             }
             const type = fc.features[0].geometry.type;
             if (["LineString", "MultiLineString"].includes(type)) {
-              const feature = fc
-                .features[0] as GeoJSON.Feature<MultiLineString>;
+              let feature;
+              if (type === "MultiLineString") {
+                const tmpFeature = fc
+                  .features[0] as GeoJSON.Feature<MultiLineString>;
+                feature = makeLineString(tmpFeature);
+              } else {
+                feature = fc.features[0] as GeoJSON.Feature<LineString>;
+              }
 
-              feature.geometry;
-
-              setRoute({
-                feature,
-              });
+              setRoute(feature);
             }
           }
         }
@@ -109,6 +166,16 @@ const AddTravelDay = () => {
                   maxLength={20}
                   name="gpx"
                   onChange={handleGpxInput}
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className="relative w-full h-(screen-320) md:h-(screen-20)">
+                <div
+                  id="map"
+                  ref={mapContainer}
+                  className="absolute w-full h-full"
                 />
               </div>
             </div>

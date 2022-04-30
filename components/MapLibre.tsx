@@ -6,7 +6,6 @@ import React, {
   SetStateAction,
 } from "react";
 import maplibregl from "maplibre-gl";
-import turf from "@turf/turf";
 import usePrevious from "../lib/usePrevious";
 import { MultiLineString } from "geojson";
 import { Prisma } from "@prisma/client";
@@ -142,9 +141,10 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
     // Create a 'LngLatBounds' with both corners at the first coordinate.
     if (!coordinates) return;
 
-    const coords = geoJsonRoute.geometry.coordinates.flat();
-
-    const bounds = new maplibregl.LngLatBounds(coords[0], coords[0]);
+    const bounds = new maplibregl.LngLatBounds(
+      geoJsonRoute.geometry.coordinates[0],
+      geoJsonRoute.geometry.coordinates[0]
+    );
 
     // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
     for (const coord of geoJsonRoute.geometry.coordinates) {
