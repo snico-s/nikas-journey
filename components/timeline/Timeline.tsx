@@ -34,7 +34,7 @@ function Timeline({
   }, [selected]);
 
   return (
-    <ol className="relativ p-2 bg-white dark:bg-black">
+    <ol className="relativ p-2 bg-white">
       {travelDays.map((travelDay, index) => (
         <TimelineItem
           key={travelDay.id}

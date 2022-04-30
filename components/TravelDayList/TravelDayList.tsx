@@ -49,11 +49,11 @@ const TravelDayList = ({ travelDays, timeLines }: Props) => {
             <div>Titel: {day.title}</div>
             <div>Text: {day.body ? day.body.slice(0, 200) + " ..." : ""}</div>
             <div className="flex flex-wrap mt-4">
-              <span className="inline-flex items-center m-1 px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 dark:focus:ring-blue-200 dark:focus:text-blue-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+              <span className="inline-flex items-center m-1 px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-200">
                 <Link href={"reise-tage/bearbeiten/" + day.id}>Bearbeiten</Link>
               </span>
               {day.route.length === 0 ? (
-                <span className="inline-flex items-center m-1 px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 dark:focus:ring-blue-200 dark:focus:text-blue-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                <span className="inline-flex items-center m-1 px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2">
                   <Link href={"reise-tage/" + day.id + "/route-hinzufuegen"}>
                     Route hinzufügen
                   </Link>
@@ -67,14 +67,14 @@ const TravelDayList = ({ travelDays, timeLines }: Props) => {
                   setSelectedTravelDayId(day.id);
                   setShowAddToCollection(true);
                 }}
-                className="inline-flex items-center m-1 px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 dark:focus:ring-blue-200 dark:focus:text-blue-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                className="inline-flex items-center m-1 px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2"
               >
                 Zur Timeline hinzufügen
               </button>
 
               <button
                 onClick={() => setShowDeleteModal(true)}
-                className="inline-flex items-center m-1 px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 dark:focus:ring-blue-200 dark:focus:text-blue-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                className="inline-flex items-center m-1 px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2"
               >
                 Löschen
               </button>

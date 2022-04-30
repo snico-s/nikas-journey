@@ -45,7 +45,7 @@ function TimelineItem({
 
   return (
     <li
-      className="relative mb-2 last:mb-0 dark:border-gray-700"
+      className="relative mb-2 last:mb-0"
       onClick={() => {
         onClick((id + "") as string);
       }}
@@ -68,46 +68,40 @@ function TimelineItem({
         ${first ? "h-(timeline-first)" : "mt-3"}
         ${!first && !last ? "h-(timeline)" : ""}
         ${last ? "h-(timeline-end)" : ""} 
-        ${
-          selected
-            ? "bg-green-600 dark:bg-white z-20"
-            : "bg-gray-500 dark:bg-gray-400 z-10"
-        }`}
+        ${selected ? "bg-green-600 z-20" : "bg-gray-500 z-10"}`}
       ></div>
 
       {/* Point */}
 
       <div
-        className={`mt-3 z-20 absolute w-3.5 h-3.5 bg-gray-100 rounded-full -left-1.5 border dark:bg-white 
+        className={`mt-3 z-20 absolute w-3.5 h-3.5 bg-gray-100 rounded-full -left-1.5 border  
         ${selected ? "bg-green-600" : ""} ${hovered ? "bg-green-400" : ""}`}
       ></div>
 
       {/* Content-Container */}
       <div
         className={`ml-4 rounded-md p-2 
-        ${selected ? "bg-gray-100 dark:bg-gray-800" : ""} 
-        ${hovered ? "bg-gray-200 dark:bg-gray-700" : ""}
+        ${selected ? "bg-gray-100" : ""} 
+        ${hovered ? "bg-gray-200" : ""}
         `}
       >
         {/* Header */}
-        <div className="relative mb-1 leading-none font-normal text-base text-gray-400 dark:text-gray-400">
+        <div className="relative mb-1 leading-none font-normal text-base text-gray-400">
           <span className="font-bold">Tag {day}</span>
           <time className="text-sm"> - {dateString}</time>
           <span className="absolute text-sm right-2">{distance} km</span>
         </div>
 
         {/* Title */}
-        <h3 className="pl-2 text-lg font-semibold text-gray-900 dark:text-white">
-          {title}
-        </h3>
+        <h3 className="pl-2 text-lg font-semibold text-gray-900">{title}</h3>
 
         {/* Content */}
-        <p className="mb-4 pl-2 text-base font-normal text-gray-500 dark:text-gray-400">
+        <p className="mb-4 pl-2 text-base font-normal text-gray-500">
           {isReadMore && body ? body.slice(0, 250) + " ..." : body}
           <div className="mt-4">
             <button
               onClick={toggleReadMore}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 dark:focus:ring-blue-200 dark:focus:text-blue-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 "
             >
               {isReadMore ? "Weiter lesen" : "Weniger"}
               {isReadMore ? (
