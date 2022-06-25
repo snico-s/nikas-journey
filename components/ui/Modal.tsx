@@ -16,10 +16,7 @@ const Modal = ({ setShowModal, title, children, onSubmit }: Props) => {
             {/* Header */}
             <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t ">
               <h3 className="text-3xl font=semibold">{title}</h3>
-              <button
-                className="bg-transparent border-0 text-black float-right"
-                onClick={() => setShowModal(false)}
-              >
+              <button className="btn" onClick={() => setShowModal(false)}>
                 <span className="text-black text-2xl">x</span>
               </button>
             </div>
@@ -28,14 +25,14 @@ const Modal = ({ setShowModal, title, children, onSubmit }: Props) => {
             {/* Footer */}
             <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
               <button
-                className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
+                className="btn"
                 type="button"
                 onClick={() => setShowModal(false)}
               >
                 Close
               </button>
               <button
-                className="text-white bg-yellow-500 active:bg-yellow-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                className="btn"
                 type="button"
                 onClick={() => {
                   onSubmit();

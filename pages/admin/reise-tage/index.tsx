@@ -15,7 +15,9 @@ function TravelDaysPage({ travelDays, travelDaysNotInMain, timeLines }: Props) {
   console.log(travelDays);
   return (
     <div className="container mx-auto px-4">
-      <Link href="/admin/reise-tage/erstellen">Reise-Tag erstellen</Link>
+      <button className="btn">
+        <Link href="/admin/reise-tage/erstellen">Reise-Tag erstellen</Link>
+      </button>
 
       <h1 className="text-3xl my-2">Liste in Main-Timeline</h1>
       <TravelDayList travelDays={travelDays} timeLines={timeLines} />
