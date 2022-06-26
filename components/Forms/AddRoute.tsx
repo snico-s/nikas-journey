@@ -1,13 +1,4 @@
-import React, {
-  ChangeEventHandler,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useRouter } from "next/router";
-import { mutate } from "swr";
+import React, { useEffect, useRef } from "react";
 import {
   Feature,
   GeoJsonProperties,
@@ -15,7 +6,6 @@ import {
   MultiLineString,
 } from "geojson";
 import { gpx } from "@tmcw/togeojson";
-import { TravelDay } from "@prisma/client";
 import { fromMultiLineToLineString } from "./../../lib/geoHelpers";
 import maplibregl from "maplibre-gl";
 
