@@ -72,7 +72,6 @@ const AddTravelDay = () => {
 
   const handleGpxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
-    console.log(target);
 
     if (target.files != null) {
       const file = target.files[0];
@@ -82,26 +81,50 @@ const AddTravelDay = () => {
         if (evt.target != null) {
           if (typeof evt.target.result === "string") {
             const result: string = evt.target.result;
+
+            // Convert to FeatureCollection
             const fc = gpx(new DOMParser().parseFromString(result, "text/xml"));
 
-            console.log(fc);
             if (fc.features.length < 1) {
               setErrors({ features: "Keine Features vorhanden" });
               return console.error("Keine Fearutes vorhanden");
             }
-            const type = fc.features[0].geometry.type;
-            if (["LineString", "MultiLineString"].includes(type)) {
-              let feature;
-              if (type === "MultiLineString") {
-                const tmpFeature = fc
-                  .features[0] as GeoJSON.Feature<MultiLineString>;
-                feature = makeLineString(tmpFeature);
-              } else {
-                feature = fc.features[0] as GeoJSON.Feature<LineString>;
-              }
 
-              setRoute(feature);
+            let properties = {};
+            let geoJson = {
+              type: "Feature",
+              geometry: {
+                type: "LineString",
+                coordinates: [],
+              },
+              properties,
+            } as GeoJSON.Feature<LineString>;
+
+            for (let i = 0; i < fc.features.length; i++) {
+              const type = fc.features[i].geometry.type;
+
+              if (["LineString", "MultiLineString"].includes(type)) {
+                let feature;
+
+                if (type === "MultiLineString") {
+                  const tmpFeature = fc.features[
+                    i
+                  ] as GeoJSON.Feature<MultiLineString>;
+                  feature = makeLineString(tmpFeature);
+                } else {
+                  feature = fc.features[i] as GeoJSON.Feature<LineString>;
+                }
+
+                feature.geometry.coordinates.forEach((coordinate) => {
+                  geoJson.geometry.coordinates.push(coordinate);
+                });
+
+                // TODO: Properties aneinander reihen
+                Object.assign(properties, feature.properties);
+              }
             }
+
+            setRoute(geoJson);
           }
         }
       };
