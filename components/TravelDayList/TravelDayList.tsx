@@ -52,15 +52,11 @@ const TravelDayList = ({ travelDays, timeLines }: Props) => {
               <button className="btn">
                 <Link href={"reise-tage/bearbeiten/" + day.id}>Bearbeiten</Link>
               </button>
-              {day.route.length === 0 ? (
-                <button className="btn">
-                  <Link href={"reise-tage/" + day.id + "/route-hinzufuegen"}>
-                    Route hinzufügen
-                  </Link>
-                </button>
-              ) : (
-                ""
-              )}
+              <button className="btn">
+                <Link href={"reise-tage/" + day.id + "/route-hinzufuegen"}>
+                  Route hinzufügen
+                </Link>
+              </button>
 
               <button
                 onClick={() => {

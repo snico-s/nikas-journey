@@ -5,13 +5,18 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
-import maplibregl from "maplibre-gl";
+import maplibregl, { Coordinates, LngLatBounds } from "maplibre-gl";
 import usePrevious from "../lib/usePrevious";
-import { MultiLineString } from "geojson";
+import { FeatureCollection, MultiLineString, Position } from "geojson";
 import { Prisma } from "@prisma/client";
 import { TravelDayWithRoute } from "../@types/custom";
 
-const makeGeoJson = (
+interface boundMap {
+  id: string;
+  bounds: LngLatBounds;
+}
+
+const makeGeoJsonFeature = (
   id: string | number,
   type: string,
   coordinates: Prisma.JsonArray,
@@ -38,11 +43,15 @@ type Props = {
 };
 
 function MapLibre({ route, onClick, selected, hovered }: Props) {
+  const [boundMap, setBoundMap] = useState<boundMap[]>([]);
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<maplibregl.Map | null>(null);
+  const boundsMap = useRef(new Map<string, LngLatBounds>());
   const prevSelected: string | null | undefined = usePrevious(selected);
   const prevHoverd: string | null | undefined = usePrevious(hovered);
   const [API_KEY] = useState("9V8S1PVf6CfINuabJsSA");
+
+  // const boundsMap = new Map<string, LngLatBounds>();
 
   useEffect(() => {
     if (map.current) return;
@@ -60,11 +69,48 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
 
       map.current.on("load", () => {
         // Add GeoJson
-        console.log(route);
         route.forEach((routeitem) => {
           if (!routeitem.route[0] || !routeitem.route[0].travelDayId) return;
+          const id: string = routeitem.route[0].travelDayId;
 
-          const geoJsonRoute = makeGeoJson(
+          const bounds = new maplibregl.LngLatBounds(
+            routeitem.route[0].coordinates[0],
+            routeitem.route[0].coordinates[1]
+          );
+
+          const routesArray = routeitem.route.map((route) => {
+            const coordinates: Coordinates = route.coordinates;
+
+            const feature = makeGeoJsonFeature(
+              id,
+              route.type,
+              coordinates,
+              route.properties
+            );
+
+            coordinates.forEach((coord) => {
+              bounds.extend([coord[0], coord[1]]);
+            });
+
+            return feature;
+          });
+
+          console.log(routesArray);
+
+          const featureCollection: FeatureCollection = {
+            type: "FeatureCollection",
+            features: routesArray,
+            bbox: [
+              bounds._ne.lat,
+              bounds._ne.lng,
+              bounds._sw.lat,
+              bounds._sw.lat,
+            ],
+          };
+          const boundObj = { id, bounds };
+          setBoundMap((oldArray) => [...oldArray, boundObj]);
+
+          const geoJsonRoute = makeGeoJsonFeature(
             routeitem.route[0].travelDayId,
             routeitem.route[0].type,
             routeitem.route[0].coordinates,
@@ -74,7 +120,7 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
           if (!map.current) return;
           map.current.addSource(geoJsonRoute.id as string, {
             type: "geojson",
-            data: geoJsonRoute,
+            data: featureCollection,
           });
 
           map.current!.addLayer({
@@ -129,7 +175,7 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
     if (!selectedRoute?.route) return;
 
     if (!selectedRoute.route[0] || !selectedRoute.route[0].travelDayId) return;
-    const geoJsonRoute = makeGeoJson(
+    const geoJsonRoute = makeGeoJsonFeature(
       selectedRoute.route[0].travelDayId!,
       selectedRoute.route[0].type,
       selectedRoute.route[0].coordinates,
@@ -141,16 +187,16 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
     // Create a 'LngLatBounds' with both corners at the first coordinate.
     if (!coordinates) return;
 
-    const bounds = new maplibregl.LngLatBounds(
-      geoJsonRoute.geometry.coordinates[0],
-      geoJsonRoute.geometry.coordinates[0]
-    );
+    // const bounds = new maplibregl.LngLatBounds(
+    //   geoJsonRoute.geometry.coordinates[0],
+    //   geoJsonRoute.geometry.coordinates[0]
+    // );
 
-    // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
-    for (const coord of geoJsonRoute.geometry.coordinates) {
-      //@ts-ignore
-      bounds.extend(coord);
-    }
+    // // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
+    // for (const coord of geoJsonRoute.geometry.coordinates) {
+    //   //@ts-ignore
+    //   bounds.extend(coord);
+    // }
 
     if (prevSelected) {
       map.current.setPaintProperty(prevSelected, "line-color", "#888");
@@ -158,9 +204,13 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
 
     map.current.setPaintProperty(selected, "line-color", "#16a34a");
 
-    map.current.fitBounds(bounds, {
-      padding: 20,
-    });
+    const bounds = boundMap.find((obj) => obj.id == selected)?.bounds;
+    console.log(bounds);
+    if (bounds) {
+      map.current.fitBounds(bounds, {
+        padding: 20,
+      });
+    }
   }, [selected]);
 
   useEffect(() => {

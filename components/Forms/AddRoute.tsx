@@ -139,7 +139,7 @@ const AddRoute = ({ route, setRoute }: Props) => {
   };
 
   return (
-    <div className="">
+    <div>
       {/* GPX Upload */}
       <div className="py-4">
         <label className="block text-sm font-medium" htmlFor="date">
@@ -151,6 +151,7 @@ const AddRoute = ({ route, setRoute }: Props) => {
             maxLength={20}
             name="gpx"
             onChange={handleGpxInput}
+            onClick={() => console.log("hier")}
           />
         </div>
       </div>
