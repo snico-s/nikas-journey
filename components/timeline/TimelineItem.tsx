@@ -98,9 +98,11 @@ function TimelineItem({
         {/* Content */}
         {body && body?.length > 0 ? (
           <p className="mb-4 pl-2 text-base font-normal text-gray-500">
-            {isReadMore && body?.length > 250
-              ? body.slice(0, 250) + " ..."
-              : body}
+            {isReadMore && body?.length > 250 ? (
+              body.slice(0, 250) + " ..."
+            ) : (
+              <span className=" whitespace-pre-line">{body}</span>
+            )}
 
             {body?.length > 250 ? (
               <div className="mt-4">
