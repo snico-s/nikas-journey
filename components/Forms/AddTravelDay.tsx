@@ -1,19 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { LineString, MultiLineString } from "geojson";
-import { gpx } from "@tmcw/togeojson";
-import maplibregl from "maplibre-gl";
-
-const makeLineString = (feature: GeoJSON.Feature<MultiLineString>) => {
-  return {
-    type: "Feature",
-    geometry: {
-      type: "LineString",
-      coordinates: feature.geometry.coordinates.flat(),
-    },
-    properties: feature.properties,
-  };
-};
+import { Feature, LineString } from "geojson";
+import AddRoute from "./AddRoute";
 
 const AddTravelDay = () => {
   const router = useRouter();
@@ -24,115 +12,9 @@ const AddTravelDay = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [distance, setDistance] = useState(70);
-  const [route, setRoute] = useState({});
-
-  const mapContainer = useRef<HTMLDivElement | null>(null);
-  const map = useRef<maplibregl.Map | null>(null);
-
-  useEffect(() => {
-    if (map.current) return;
-    if (mapContainer.current !== null) {
-      map.current = new maplibregl.Map({
-        container: mapContainer.current,
-        style: `https://api.maptiler.com/maps/basic/style.json?key=9V8S1PVf6CfINuabJsSA`,
-        center: [15.176529, 47.406018],
-        zoom: 3,
-        // attributionControl: false,
-      });
-      // Add zoom and rotation controls to the map.
-      map.current.addControl(new maplibregl.NavigationControl({}));
-      // map.current.addControl(new maplibregl.AttributionControl(), "top-left");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (map.current == null) return;
-    if (!map.current.isStyleLoaded()) return;
-
-    map.current.addSource("route", {
-      type: "geojson",
-      data: route,
-    });
-    map.current.addLayer({
-      id: "route",
-      type: "line",
-      source: "route",
-      layout: {
-        "line-join": "round",
-        "line-cap": "round",
-      },
-      paint: {
-        "line-color": "#888",
-        "line-width": 8,
-      },
-    });
-  }, [route]);
+  const [route, setRoute] = useState<Feature<LineString> | null>(null);
 
   const contentType = "application/json";
-
-  const handleGpxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target;
-
-    if (target.files != null) {
-      const file = target.files[0];
-      const reader = new FileReader();
-      reader.readAsText(file, "UTF-8");
-      reader.onload = function (evt: ProgressEvent<FileReader>) {
-        if (evt.target != null) {
-          if (typeof evt.target.result === "string") {
-            const result: string = evt.target.result;
-
-            // Convert to FeatureCollection
-            const fc = gpx(new DOMParser().parseFromString(result, "text/xml"));
-
-            if (fc.features.length < 1) {
-              setErrors({ features: "Keine Features vorhanden" });
-              return console.error("Keine Fearutes vorhanden");
-            }
-
-            let properties = {};
-            let geoJson = {
-              type: "Feature",
-              geometry: {
-                type: "LineString",
-                coordinates: [],
-              },
-              properties,
-            } as GeoJSON.Feature<LineString>;
-
-            for (let i = 0; i < fc.features.length; i++) {
-              const type = fc.features[i].geometry.type;
-
-              if (["LineString", "MultiLineString"].includes(type)) {
-                let feature;
-
-                if (type === "MultiLineString") {
-                  const tmpFeature = fc.features[
-                    i
-                  ] as GeoJSON.Feature<MultiLineString>;
-                  feature = makeLineString(tmpFeature);
-                } else {
-                  feature = fc.features[i] as GeoJSON.Feature<LineString>;
-                }
-
-                feature.geometry.coordinates.forEach((coordinate) => {
-                  geoJson.geometry.coordinates.push(coordinate);
-                });
-
-                // TODO: Properties aneinander reihen
-                Object.assign(properties, feature.properties);
-              }
-            }
-
-            setRoute(geoJson);
-          }
-        }
-      };
-      reader.onerror = function (evt) {
-        console.error("Fehler beim lesen");
-      };
-    }
-  };
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -180,29 +62,7 @@ const AddTravelDay = () => {
         <div className="bg-white py-8 px-6 rounded-lg sm:shadow sm:px-10">
           <form className="mb-0 space-y-6" onSubmit={handleSubmit}>
             {/* GPX Upload */}
-            <div>
-              <label className="block text-sm font-medium" htmlFor="date">
-                GPX-Datei
-              </label>
-              <div className="mt-1">
-                <input
-                  type="file"
-                  maxLength={20}
-                  name="gpx"
-                  onChange={handleGpxInput}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="relative w-full h-(screen-320) md:h-(screen-20)">
-                <div
-                  id="map"
-                  ref={mapContainer}
-                  className="absolute w-full h-full"
-                />
-              </div>
-            </div>
+            <AddRoute route={route} setRoute={setRoute} />
 
             {/* Datum */}
             <div>
