@@ -69,9 +69,9 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
 
       map.current.on("load", () => {
         // Add GeoJson
-        route.forEach((routeitem) => {
+        route.forEach((routeitem, index) => {
           if (!routeitem.route[0] || !routeitem.route[0].travelDayId) return;
-          const id: string = routeitem.route[0].travelDayId;
+          const travelDayId: string = routeitem.route[0].travelDayId;
 
           const bounds = new maplibregl.LngLatBounds(
             routeitem.route[0].coordinates[0],
@@ -82,7 +82,7 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
             const coordinates: Coordinates = route.coordinates;
 
             const feature = makeGeoJsonFeature(
-              id,
+              travelDayId + "-" + index,
               route.type,
               coordinates,
               route.properties
@@ -95,8 +95,6 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
             return feature;
           });
 
-          console.log(routesArray);
-
           const featureCollection: FeatureCollection = {
             type: "FeatureCollection",
             features: routesArray,
@@ -107,7 +105,7 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
               bounds._sw.lat,
             ],
           };
-          const boundObj = { id, bounds };
+          const boundObj = { id: travelDayId, bounds: bounds };
           setBoundMap((oldArray) => [...oldArray, boundObj]);
 
           const geoJsonRoute = makeGeoJsonFeature(
@@ -146,19 +144,21 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
           // Change the cursor to a pointer when the mouse is over the places layer.
           map.current.on("mouseenter", geoJsonRoute.id as string, function () {
             if (!map.current) return;
+            console.log("mouseenter");
             map.current.getCanvas().style.cursor = "pointer";
           });
 
           // Change it back to a pointer when it leaves.
           map.current.on("mouseleave", geoJsonRoute.id as string, function () {
             if (!map.current) return;
+            console.log("mouseleave");
             map.current.getCanvas().style.cursor = "";
           });
 
           map.current.on("click", geoJsonRoute.id as string, function (e) {
             if (!e.features) return;
             // @ts-ignore
-            onClick(e.features[0].id as string);
+            onClick(e.features[0].source as string);
           });
         });
       });
