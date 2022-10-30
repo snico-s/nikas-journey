@@ -40,9 +40,10 @@ type Props = {
   onClick: Dispatch<SetStateAction<string | null>>;
   selected: string | null;
   hovered: string | null;
+  onHover: Dispatch<SetStateAction<string | null>>;
 };
 
-function MapLibre({ route, onClick, selected, hovered }: Props) {
+function MapLibre({ route, onClick, selected, hovered, onHover }: Props) {
   const [boundMap, setBoundMap] = useState<boundMap[]>([]);
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<maplibregl.Map | null>(null);
@@ -144,14 +145,15 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
           // Change the cursor to a pointer when the mouse is over the places layer.
           map.current.on("mouseenter", geoJsonRoute.id as string, function () {
             if (!map.current) return;
-            console.log("mouseenter");
+            onHover((geoJsonRoute.id + "") as string);
             map.current.getCanvas().style.cursor = "pointer";
           });
 
           // Change it back to a pointer when it leaves.
           map.current.on("mouseleave", geoJsonRoute.id as string, function () {
             if (!map.current) return;
-            console.log("mouseleave");
+
+            onHover(null);
             map.current.getCanvas().style.cursor = "";
           });
 
@@ -205,7 +207,7 @@ function MapLibre({ route, onClick, selected, hovered }: Props) {
     map.current.setPaintProperty(selected, "line-color", "#16a34a");
 
     const bounds = boundMap.find((obj) => obj.id == selected)?.bounds;
-    console.log(bounds);
+
     if (bounds) {
       map.current.fitBounds(bounds, {
         padding: 20,
