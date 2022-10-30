@@ -21,7 +21,6 @@ const SignUp = (props: Props) => {
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    console.log(form);
 
     try {
       const res = await fetch(`/api/auth/signup`, {
@@ -42,7 +41,6 @@ const SignUp = (props: Props) => {
       // router.push("/");
     } catch (error) {
       // setMessage("Failed to update");
-      console.log("Mist!");
     }
   };
 

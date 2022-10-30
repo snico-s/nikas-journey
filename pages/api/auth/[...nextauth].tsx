@@ -22,7 +22,6 @@ export default NextAuth({
           const user = await prisma.user.findUnique({
             where: { email: credentials?.email },
           });
-          console.log(user);
           if (!user) {
             throw new Error("No user found with the email");
           }
@@ -38,7 +37,6 @@ export default NextAuth({
 
           return user;
         } catch (error) {
-          console.log(error);
           return null;
         }
       },
@@ -47,8 +45,6 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       // Persist the OAuth access_token to the token right after signin
-      console.log(user);
-      console.log("jwt...................................");
 
       if (user) {
         token.isAdmin = user.isAdmin;
@@ -56,12 +52,9 @@ export default NextAuth({
       return token;
     },
     async session({ session, token, user }) {
-      console.log(token);
       // Send properties to the client, like an access_token from a provider.
       // session.user.isAdmin = user.isAdmin;
       session.user.isAdmin = token.isAdmin;
-      console.log(user);
-      console.log("session...................................");
       return session;
     },
   },

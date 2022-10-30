@@ -20,7 +20,6 @@ export default async function handler(
   switch (method) {
     case "GET" /* Get a model by its ID */:
       try {
-        console.log(id);
         const travelDay = await prisma.travelDay.findMany({
           where: {
             id: +id,

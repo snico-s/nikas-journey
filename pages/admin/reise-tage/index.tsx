@@ -12,7 +12,6 @@ type Props = {
 };
 
 function TravelDaysPage({ travelDays, travelDaysNotInMain, timeLines }: Props) {
-  console.log(travelDays);
   return (
     <div className="container mx-auto px-4">
       <button className="btn">

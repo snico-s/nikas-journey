@@ -13,7 +13,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   //Only POST mothod is accepted
   if (req.method === "POST") {
     const { email, name, password } = req.body;
-    console.log(email);
     //Validate
     if (!email || !email.includes("@") || !password) {
       res.status(422).json({ message: "Invalid Data" });
@@ -40,7 +39,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
       res.status(201).json({ message: "success", data: user });
       res.status(201).json({ message: "success" });
     } catch (error) {
-      console.log(error);
       res.status(400).json({ message: "failed" });
     }
   }

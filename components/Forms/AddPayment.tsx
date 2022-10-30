@@ -23,13 +23,11 @@ const AddPayment = (props: Props) => {
     const fetchCurrency = async () => {
       const response = await fetch("/api/currency");
       const json = await response.json();
-      console.log(json.data);
       setCurrencies(json.data);
     };
     const fetchCategories = async () => {
       const response = await fetch("/api/payments/categories");
       const json = await response.json();
-      console.log(json.data);
       setCategories(json.data);
     };
 

@@ -17,7 +17,6 @@ export default async function handler(
     method,
   } = req;
 
-  console.log(method);
   switch (method) {
     case "GET" /* Get a model by its ID */:
       try {
@@ -30,7 +29,6 @@ export default async function handler(
     case "POST" /* Edit a model by its ID */:
       try {
         const { timeLineId } = req.body;
-        console.log(timeLineId);
 
         const timeLineHasTravelDays = await prisma.timeLineHasTravelDays.create(
           {
@@ -43,7 +41,6 @@ export default async function handler(
 
         res.status(200).json({ success: true, data: timeLineHasTravelDays });
       } catch (error) {
-        console.log(error);
         res.status(400).json({ success: false });
       }
       break;

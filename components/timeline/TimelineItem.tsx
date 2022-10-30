@@ -32,8 +32,6 @@ function TimelineItem({
   // Destructure Item-Data
   const { id, date, title, body, route, distance } = travelDay;
 
-  console.log(route);
-
   let day = moment(date).diff(moment(startDate), "days");
   if (day >= 0) day++;
 
@@ -53,7 +51,6 @@ function TimelineItem({
         onHover((id + "") as string);
       }}
       onMouseLeave={() => {
-        console.log("leave");
         onHover(null);
       }}
       onTouchStart={() => {

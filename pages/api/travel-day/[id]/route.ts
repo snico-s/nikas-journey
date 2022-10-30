@@ -16,7 +16,6 @@ export default async function handler(
     query: { id },
     method,
   } = req;
-  console.log(method);
   switch (method) {
     case "GET" /* Get a model by its ID */:
       try {
@@ -30,8 +29,6 @@ export default async function handler(
       try {
         const { route } = req.body;
 
-        console.log(route);
-
         const routeCreate = await prisma.route.create({
           data: {
             travelDayId: +id,
@@ -43,7 +40,6 @@ export default async function handler(
 
         res.status(200).json({ success: true, data: routeCreate });
       } catch (error) {
-        console.log(error);
         res.status(400).json({ success: false });
       }
       break;

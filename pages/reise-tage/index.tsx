@@ -13,7 +13,6 @@ type Props = {
 };
 
 function index({ travelDays, travelDaysNotInMain, timeLines }: Props) {
-  console.log(travelDays);
   return (
     <div className="container mx-auto px-4">
       <h1 className="text-3xl my-2">Liste in Main-Timeline</h1>

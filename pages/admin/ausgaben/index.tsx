@@ -16,7 +16,6 @@ const index = (props: Props) => {
       const response = await fetch("/api/payments");
       const json = await response.json();
       console.log(json.data);
-      console.log(typeof json.data);
       setPayments(json.data);
     };
 

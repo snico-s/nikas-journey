@@ -21,7 +21,6 @@ export default async function handler(
           },
           distinct: ["category"],
         });
-        console.log(payments);
 
         const categories = payments
           .filter((payment) => {

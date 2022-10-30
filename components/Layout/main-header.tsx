@@ -13,8 +13,6 @@ function MainHeader() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const menuSrOnlySpan = useRef<HTMLSpanElement>(null);
 
-  console.log(session);
-
   let resizeTimer: any;
   useEffect(() => {
     window.addEventListener("resize", () => {

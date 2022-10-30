@@ -12,8 +12,6 @@ export default async function handler(
 ) {
   const prisma = new PrismaClient();
 
-  console.log("hier");
-
   switch (req.method) {
     case "GET":
       try {
@@ -33,7 +31,6 @@ export default async function handler(
       }
       break;
     case "POST":
-      console.log("post");
       try {
         const payment = await prisma.payment.create({
           data: {
@@ -58,11 +55,8 @@ export default async function handler(
           },
         });
 
-        console.log(payment);
-
         res.status(200).json({ success: true, data: payment });
       } catch (error) {
-        console.log(error);
         res.status(400).json({ success: false });
       }
       break;

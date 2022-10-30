@@ -56,6 +56,7 @@ function RoutePage({ travelDays, startDate }: Props) {
           onClick={setSelectedRoute}
           selected={selectedRoute}
           hovered={hoveredRoute}
+          onHover={setHoverRoute}
         />
         <div className="bg-white w-full h-80 overflow-y-auto md:h-full">
           <Timeline
@@ -101,7 +102,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   );
 
   const sortedTravelDay = travelDays?.sort((a, b) => {
-    return new Date(a.date).getTime() - new Date(b.date).getTime();
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
   const startDate = data?.startDate.toDateString();
 

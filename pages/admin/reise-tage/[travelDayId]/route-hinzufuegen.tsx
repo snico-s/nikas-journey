@@ -9,8 +9,6 @@ function AddRoutePage({}: Props) {
   const router = useRouter();
   const { travelDayId } = router.query;
 
-  console.log("addroutepage");
-
   if (!travelDayId) return <div>Nichts gefunden</div>;
 
   return (
