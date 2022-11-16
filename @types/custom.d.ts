@@ -10,6 +10,15 @@ type routeData = {
   route?: GeoJSON.Feature<LineString>;
 };
 
+type RouteFileData = {
+  filename: string;
+  date: string;
+  truncated: Feature<LineString, GeoJsonProperties>;
+  geoJson: Feature<LineString, GeoJsonProperties>;
+  distance: number;
+  uploaded: boolean | null; //UPLOADED, IN_PROGRESS, FAILED
+};
+
 type TimeLineData = {
   _id: number;
   day: number;

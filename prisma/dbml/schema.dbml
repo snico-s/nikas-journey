@@ -55,6 +55,7 @@ Table TravelDay {
   distance Decimal
   timeLineTravelDays TimeLineHasTravelDays [not null]
   route Route [not null]
+  truncatedRoute TruncatedRoute [not null]
   payments Payment [not null]
 }
 
@@ -63,6 +64,13 @@ Table Route {
   type String [not null]
   coordinates Json [not null]
   properties Json [not null]
+  travelDay TravelDay
+  travelDayId Int
+}
+
+Table TruncatedRoute {
+  id Int [pk, increment]
+  coordinates Json [not null]
   travelDay TravelDay
   travelDayId Int
 }
@@ -96,6 +104,8 @@ Ref: TimeLineHasTravelDays.timeLineId > TimeLine.id
 Ref: TimeLineHasTravelDays.travelDayId > TravelDay.id
 
 Ref: Route.travelDayId > TravelDay.id
+
+Ref: TruncatedRoute.travelDayId > TravelDay.id
 
 Ref: Payment.travelDayId > TravelDay.id
 

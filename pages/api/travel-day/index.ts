@@ -22,57 +22,95 @@ export default async function handler(
             route: true,
           },
         });
-        res.status(200).json({ success: false, data: routes });
+        res.status(200).json({ success: true, data: routes });
       } catch (error) {
         res.status(400).json({ success: false });
       }
       break;
     case "POST":
       try {
-        // const route: GeoJSON.Feature<LineString> = req.body.route;
-        let travelDay: Prisma.TravelDayCreateInput = {
-          title: req.body.title,
-          date: new Date(req.body.date),
-          body: req.body.body,
-          distance: req.body.distance,
-        };
-
         const route = req.body.route;
-        if (Object.keys(route).length > 0) {
-          travelDay = {
-            ...travelDay,
-            route: {
-              create: {
+        let travelDayId: number | null = null;
+
+        //check if date exists
+        let existingTravelDay = await prisma.travelDay.findUnique({
+          where: {
+            date: new Date(req.body.date),
+          },
+        });
+
+        console.log(existingTravelDay);
+
+        if (existingTravelDay !== null) {
+          travelDayId = existingTravelDay.id;
+
+          if (
+            Object.keys(route).length > 0
+            // && Object.keys(truncated).length > 0
+          ) {
+            await prisma.route.create({
+              data: {
                 type: route.geometry.type,
                 coordinates: route.geometry.coordinates,
                 properties: route.properties,
+                travelDayId: travelDayId,
               },
-            },
+            });
+          }
+        } else {
+          let travelDay: Prisma.TravelDayCreateInput = {
+            title: req.body.title,
+            date: new Date(req.body.date),
+            body: req.body.body,
+            distance: req.body.distance,
           };
+
+          // const truncated = req.body.truncated;
+          if (
+            Object.keys(route).length > 0
+            // && Object.keys(truncated).length > 0
+          ) {
+            travelDay = {
+              ...travelDay,
+              route: {
+                create: {
+                  type: route.geometry.type,
+                  coordinates: route.geometry.coordinates,
+                  properties: route.properties,
+                },
+              },
+              // truncatedRoute: {
+              //   create: {
+              //     coordinates: truncated,
+              //   },
+              // },
+            };
+
+            const createTravelDay = await prisma.travelDay.create({
+              data: travelDay,
+            });
+
+            travelDayId = createTravelDay.id;
+          }
         }
 
-        const createTravelDay = await prisma.travelDay.create({
-          data: travelDay,
-        });
+        console.log(travelDayId);
+        if (travelDayId !== null) {
+          await prisma.timeLineHasTravelDays.upsert({
+            where: {
+              timeLineId_travelDayId: {
+                timeLineId: 1,
+                travelDayId: travelDayId,
+              },
+            },
+            update: {},
+            create: { timeLineId: 1, travelDayId: travelDayId },
+          });
+        }
 
-        // const timeline = await prisma.timeLine.update({
-        //   where: {
-        //     userId_name: {
-        //       name: "main",
-        //       userId: 1,
-        //     },
-        //   },
-        //   data: {
-        //     timeLineHasTravelDays: {
-        //       create: {
-        //         travelDayId: createTravelDay.id,
-        //       },
-        //     },
-        //   },
-        // });
-
-        res.status(201).json({ success: true, data: createTravelDay });
+        res.status(201).json({ success: true });
       } catch (error) {
+        console.log(error);
         res.status(400).json({ success: false });
       }
       break;

@@ -8,15 +8,19 @@ import {
 import { gpx } from "@tmcw/togeojson";
 import { fromMultiLineToLineString } from "./../../lib/geoHelpers";
 import maplibregl from "maplibre-gl";
+import simplify from "@turf/simplify";
+import truncate from "@turf/truncate";
+import turfLength from "@turf/length";
 
 type Props = {
   route: Feature<LineString> | null;
   setRoute: React.Dispatch<
     React.SetStateAction<Feature<LineString, GeoJsonProperties> | null>
   >;
+  setDate: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const AddRoute = ({ route, setRoute }: Props) => {
+const AddRoute = ({ route, setRoute, setDate }: Props) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<maplibregl.Map | null>(null);
 
@@ -77,8 +81,9 @@ const AddRoute = ({ route, setRoute }: Props) => {
   const handleGpxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
 
-    if (target.files != null) {
+    if (target.files != null && target.files.length > 0) {
       const file = target.files[0];
+      console.log(file);
 
       const reader = new FileReader();
       reader.readAsText(file, "UTF-8");
@@ -94,6 +99,8 @@ const AddRoute = ({ route, setRoute }: Props) => {
               return console.error("Keine Fearutes vorhanden");
             }
 
+            console.log(fc);
+
             let properties = {};
             let geoJson = {
               type: "Feature",
@@ -104,6 +111,7 @@ const AddRoute = ({ route, setRoute }: Props) => {
               properties,
             } as GeoJSON.Feature<LineString>;
 
+            // Combine all Features from one FC to one LineString
             for (let i = 0; i < fc.features.length; i++) {
               const type = fc.features[i].geometry.type;
 
@@ -128,10 +136,32 @@ const AddRoute = ({ route, setRoute }: Props) => {
               }
             }
 
-            setRoute(geoJson);
+            var length = turfLength(geoJson, { units: "kilometers" });
+            console.log(
+              "🚀 ~ file: AddRoute.tsx ~ line 140 ~ handleGpxInput ~ length",
+              length
+            );
+
+            // Read Date
+            if (geoJson.properties != null && geoJson.properties.time != null) {
+              const time: string = geoJson.properties.time;
+              setDate(time.slice(0, 10));
+            }
+
+            console.log(geoJson);
+            const options = { tolerance: 0.001, highQuality: false };
+            const simplified = simplify(geoJson, options);
+            console.log(simplified);
+
+            var optionsTruncate = { precision: 3 };
+            var truncated = truncate(simplified, optionsTruncate);
+            console.log(truncated);
+
+            setRoute(simplified);
           }
         }
       };
+
       reader.onerror = function (evt) {
         console.error("Fehler beim lesen");
       };

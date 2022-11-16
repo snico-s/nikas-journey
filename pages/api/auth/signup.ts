@@ -41,6 +41,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     } catch (error) {
       res.status(400).json({ message: "failed" });
     }
+  } else {
+    res.status(400).json({ message: "not allowed" });
   }
 }
 
