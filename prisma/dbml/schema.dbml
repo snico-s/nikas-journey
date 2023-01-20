@@ -18,8 +18,8 @@ Table TimeLine {
   startDate DateTime [not null]
   userId Int [not null]
   users User [not null]
-  timeLineHasTravelDays TimeLineHasTravelDays [not null]
   Post Post [not null]
+  timeLineHasTravelDays TimeLineHasTravelDays [not null]
 
   indexes {
     (userId, name) [unique]
@@ -31,9 +31,9 @@ Table Post {
   title String
   body String [not null]
   userId Int [not null]
-  user User [not null]
   timeLineId Int [not null]
   routeColleaction TimeLine [not null]
+  user User [not null]
 }
 
 Table TimeLineHasTravelDays {
@@ -53,10 +53,10 @@ Table TravelDay {
   body String
   date DateTime [unique, not null]
   distance Decimal
-  timeLineTravelDays TimeLineHasTravelDays [not null]
-  route Route [not null]
-  truncatedRoute TruncatedRoute [not null]
   payments Payment [not null]
+  route Route [not null]
+  timeLineTravelDays TimeLineHasTravelDays [not null]
+  truncatedRoute TruncatedRoute [not null]
 }
 
 Table Route {
@@ -64,15 +64,15 @@ Table Route {
   type String [not null]
   coordinates Json [not null]
   properties Json [not null]
-  travelDay TravelDay
   travelDayId Int
+  travelDay TravelDay
 }
 
 Table TruncatedRoute {
   id Int [pk, increment]
   coordinates Json [not null]
-  travelDay TravelDay
   travelDayId Int
+  travelDay TravelDay
 }
 
 Table Payment {
@@ -81,9 +81,9 @@ Table Payment {
   category String
   description String
   travelDayId Int [not null]
-  travelDay TravelDay [not null]
   currencyId String [not null]
   currency Currency [not null]
+  travelDay TravelDay [not null]
 }
 
 Table Currency {
@@ -93,11 +93,19 @@ Table Currency {
   payments Payment [not null]
 }
 
+Table spatial_ref_sys {
+  srid Int [pk]
+  auth_name String
+  auth_srid Int
+  srtext String
+  proj4text String
+}
+
 Ref: TimeLine.userId > User.id
 
-Ref: Post.userId > User.id
-
 Ref: Post.timeLineId > TimeLine.id
+
+Ref: Post.userId > User.id
 
 Ref: TimeLineHasTravelDays.timeLineId > TimeLine.id
 
@@ -107,6 +115,6 @@ Ref: Route.travelDayId > TravelDay.id
 
 Ref: TruncatedRoute.travelDayId > TravelDay.id
 
-Ref: Payment.travelDayId > TravelDay.id
-
 Ref: Payment.currencyId > Currency.isoCode
+
+Ref: Payment.travelDayId > TravelDay.id

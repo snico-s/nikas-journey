@@ -165,7 +165,7 @@ function MapLibre({ route, onClick, selected, hovered, onHover }: Props) {
         });
       });
     }
-  }, []);
+  }, [route]);
 
   useEffect(() => {
     if (!selected || !map.current) return;

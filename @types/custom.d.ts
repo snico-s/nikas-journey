@@ -1,4 +1,5 @@
 import { TravelDay } from "@prisma/client";
+import { LineStringProperties } from "../lib/geoHelpers";
 
 type routeData = {
   _id?: string;
@@ -10,13 +11,18 @@ type routeData = {
   route?: GeoJSON.Feature<LineString>;
 };
 
-type RouteFileData = {
+type TravelDayData = {
+  date: Date;
+  totalDistance: number;
+  lineString: Feature<LineString, LineStringProperties>;
+  fileData: fileData[];
+};
+
+type FileData = {
   filename: string;
-  date: string;
-  truncated: Feature<LineString, GeoJsonProperties>;
-  geoJson: Feature<LineString, GeoJsonProperties>;
+  date: Date;
+  lineString: Feature<LineString, LineStringProperties>;
   distance: number;
-  uploaded: boolean | null; //UPLOADED, IN_PROGRESS, FAILED
 };
 
 type TimeLineData = {

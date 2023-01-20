@@ -27,6 +27,7 @@ export default async function handler(
         res.status(400).json({ success: false });
       }
       break;
+
     case "POST":
       try {
         const route = req.body.route;
@@ -44,10 +45,7 @@ export default async function handler(
         if (existingTravelDay !== null) {
           travelDayId = existingTravelDay.id;
 
-          if (
-            Object.keys(route).length > 0
-            // && Object.keys(truncated).length > 0
-          ) {
+          if (Object.keys(route).length > 0) {
             await prisma.route.create({
               data: {
                 type: route.geometry.type,
@@ -65,11 +63,7 @@ export default async function handler(
             distance: req.body.distance,
           };
 
-          // const truncated = req.body.truncated;
-          if (
-            Object.keys(route).length > 0
-            // && Object.keys(truncated).length > 0
-          ) {
+          if (Object.keys(route).length > 0) {
             travelDay = {
               ...travelDay,
               route: {
@@ -79,11 +73,6 @@ export default async function handler(
                   properties: route.properties,
                 },
               },
-              // truncatedRoute: {
-              //   create: {
-              //     coordinates: truncated,
-              //   },
-              // },
             };
 
             const createTravelDay = await prisma.travelDay.create({
@@ -94,7 +83,6 @@ export default async function handler(
           }
         }
 
-        console.log(travelDayId);
         if (travelDayId !== null) {
           await prisma.timeLineHasTravelDays.upsert({
             where: {

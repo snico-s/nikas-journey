@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,39 +12,35 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
+  id       Int        @id @default(autoincrement())
   name     String
-  email    String  @unique
-  isAdmin  Boolean @default(false)
+  email    String     @unique
+  isAdmin  Boolean    @default(false)
   password String
-
   posts    Post[]
   timeLine TimeLine[]
 }
 
 model TimeLine {
-  id        Int      @id @default(autoincrement())
-  name      String
-  startDate DateTime
-
+  id                    Int                     @id @default(autoincrement())
+  name                  String
+  startDate             DateTime
   userId                Int
   users                 User                    @relation(fields: [userId], references: [id])
+  Post                  Post[]
   timeLineHasTravelDays TimeLineHasTravelDays[]
-
-  Post Post[]
 
   @@unique([userId, name])
 }
 
 model Post {
-  id    Int     @id @default(autoincrement())
-  title String?
-  body  String
-
+  id               Int      @id @default(autoincrement())
+  title            String?
+  body             String
   userId           Int
-  user             User     @relation(fields: [userId], references: [id])
   timeLineId       Int
   routeColleaction TimeLine @relation(fields: [timeLineId], references: [id])
+  user             User     @relation(fields: [userId], references: [id])
 }
 
 model TimeLineHasTravelDays {
@@ -60,52 +53,51 @@ model TimeLineHasTravelDays {
 }
 
 model TravelDay {
-  id       Int      @id @default(autoincrement())
-  title    String?
-  body     String?
-  date     DateTime @unique
-  distance Decimal?
-
-  timeLineTravelDays TimeLineHasTravelDays[]
-  route              Route[]
-  truncatedRoute     TruncatedRoute[]
+  id                 Int                     @id @default(autoincrement())
+  title              String?
+  body               String?
+  date               DateTime                @unique
+  distance           Decimal?
   payments           Payment[]
+  route              Route[]
+  timeLineTravelDays TimeLineHasTravelDays[]
 }
 
 model Route {
-  id          Int    @id @default(autoincrement())
-  type        String
+  id   Int    @id @default(autoincrement())
+  type String
+  // route Unsupported("geometry(LineString, 4326)")
+
   coordinates Json
   properties  Json
-
-  travelDay   TravelDay? @relation(fields: [travelDayId], references: [id])
   travelDayId Int?
-}
-
-model TruncatedRoute {
-  id          Int  @id @default(autoincrement())
-  coordinates Json
-
   travelDay   TravelDay? @relation(fields: [travelDayId], references: [id])
-  travelDayId Int?
+
+  // @@index([route], name: "route_idx", type: Gist)
 }
 
 model Payment {
-  id          Int     @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   amount      Decimal
   category    String?
   description String?
-
   travelDayId Int
-  travelDay   TravelDay @relation(fields: [travelDayId], references: [id])
   currencyId  String
   currency    Currency  @relation(fields: [currencyId], references: [isoCode])
+  travelDay   TravelDay @relation(fields: [travelDayId], references: [id])
 }
 
 model Currency {
-  isoCode      String   @id
-  currency     String   @unique
+  isoCode      String    @id
+  currency     String    @unique
   exchangeRate Decimal?
+  payments     Payment[]
+}
 
-  payments Payment[]
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
 }

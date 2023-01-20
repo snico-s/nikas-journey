@@ -24,6 +24,7 @@ function TimelineItem({
   onHover,
 }: Props) {
   const [isReadMore, setIsReadMore] = useState(true);
+
   const toggleReadMore = () => {
     setIsReadMore(!isReadMore);
   };
@@ -86,7 +87,9 @@ function TimelineItem({
         <div className="relative mb-1 leading-none font-normal text-base text-gray-400">
           <span className="font-bold">Tag {day}</span>
           <time className="text-sm"> - {dateString}</time>
-          <span className="absolute text-sm right-2">{distance} km</span>
+          <span className="absolute text-sm right-2">
+            {parseFloat("" + distance).toFixed(2)} km
+          </span>
         </div>
 
         {/* Title */}
