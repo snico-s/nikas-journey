@@ -1,9 +1,10 @@
+import { TravelDay } from "@prisma/client";
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
-import { TravelDayWithRoute } from "../../@types/custom";
+
 import TimelineItem from "./TimelineItem";
 
 type Props = {
-  travelDays: TravelDayWithRoute[];
+  travelDays: TravelDay[];
   startDate: Date | undefined;
   onClick: Dispatch<SetStateAction<string | null>>;
   onHover: Dispatch<SetStateAction<string | null>>;

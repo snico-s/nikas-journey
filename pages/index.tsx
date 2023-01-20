@@ -3,41 +3,16 @@ import Head from "next/head";
 import MapLibre from "../components/MapLibre";
 import Timeline from "../components/timeline/Timeline";
 import { GetServerSideProps } from "next";
-import { PrismaClient } from "@prisma/client";
-import { TravelDayWithRoute } from "../@types/custom";
-import useSWR from "swr";
+import { PrismaClient, TravelDay } from "@prisma/client";
 
 type Props = {
-  travelDays: TravelDayWithRoute[];
+  travelDays: TravelDay[];
   startDate: Date | undefined;
 };
-const fetcher = (apiURL: string) => fetch(apiURL).then((res) => res.json());
 
-function RoutePage() {
-  // function RoutePage({ travelDays, startDate }: Props) {
+function RoutePage({ travelDays, startDate }: Props) {
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
   const [hoveredRoute, setHoverRoute] = useState<string | null>(null);
-  const { data, error, isLoading } = useSWR("/api/timeline", fetcher);
-
-  if (error) return <div>failed to load</div>;
-  if (isLoading && !data) return <div>loading...</div>;
-
-  console.log(typeof data);
-  console.log(data);
-  console.log(data.success);
-  console.log(data.data.startDate);
-  const startDate = data.data.startDate;
-
-  const travelDays = data.data.timeLineHasTravelDays
-    .map((travelDay: { travelDays: any }) => travelDay.travelDays)
-    .sort(
-      (
-        a: { date: string | number | Date },
-        b: { date: string | number | Date }
-      ) => {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      }
-    );
 
   return (
     <div>
@@ -49,12 +24,12 @@ function RoutePage() {
       {/* Content */}
       <div className="md:flex h-(screen-20)">
         <MapLibre
-          route={travelDays}
           onClick={setSelectedRoute}
           selected={selectedRoute}
           hovered={hoveredRoute}
           onHover={setHoverRoute}
         />
+
         <div className="bg-white w-full h-80 overflow-y-auto md:h-full">
           <Timeline
             travelDays={travelDays}
@@ -70,42 +45,37 @@ function RoutePage() {
   );
 }
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const prisma = new PrismaClient();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const prisma = new PrismaClient();
 
-//   const data = await prisma.timeLine.findUnique({
-//     where: {
-//       userId_name: {
-//         userId: 1,
-//         name: "main",
-//       },
-//     },
-//     include: {
-//       timeLineHasTravelDays: {
-//         include: {
-//           travelDays: {
-//             include: {
-//               payments: true,
-//               route: true,
-//             },
-//           },
-//         },
-//       },
-//     },
-//   });
+  const data = await prisma.timeLine.findUnique({
+    where: {
+      userId_name: {
+        userId: 1,
+        name: "main",
+      },
+    },
+    include: {
+      timeLineHasTravelDays: {
+        include: {
+          travelDays: true,
+        },
+      },
+    },
+  });
 
-//   const travelDays = data?.timeLineHasTravelDays.map(
-//     (travelDay) => travelDay.travelDays
-//   );
+  const travelDays = data?.timeLineHasTravelDays.map(
+    (travelDay) => travelDay.travelDays
+  );
 
-//   const sortedTravelDay = travelDays?.sort((a, b) => {
-//     return new Date(b.date).getTime() - new Date(a.date).getTime();
-//   });
-//   const startDate = data?.startDate.toDateString();
+  const sortedTravelDay = travelDays?.sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+  const startDate = data?.startDate.toDateString();
 
-//   const travelDaysParsed = JSON.parse(JSON.stringify(sortedTravelDay));
-//   // Pass data to the page via props
-//   return { props: { travelDays: travelDaysParsed, startDate } };
-// };
+  const travelDaysParsed = JSON.parse(JSON.stringify(sortedTravelDay));
+  // Pass data to the page via props
+  return { props: { travelDays: travelDaysParsed, startDate } };
+};
 
 export default RoutePage;

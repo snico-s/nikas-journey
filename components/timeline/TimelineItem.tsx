@@ -1,9 +1,9 @@
+import { TravelDay } from "@prisma/client";
 import moment from "moment";
 import React, { useRef, Dispatch, SetStateAction, useState } from "react";
-import { TravelDayWithRoute } from "../../@types/custom";
 
 type Props = {
-  travelDay: TravelDayWithRoute;
+  travelDay: TravelDay;
   startDate: Date | undefined;
   selected: boolean;
   hovered: boolean;
@@ -31,7 +31,7 @@ function TimelineItem({
   const myRef = useRef<HTMLLIElement>(null);
   // Destructure props
   // Destructure Item-Data
-  const { id, date, title, body, route, distance } = travelDay;
+  const { id, date, title, body, distance } = travelDay;
 
   let day = moment(date).diff(moment(startDate), "days");
   if (day >= 0) day++;
