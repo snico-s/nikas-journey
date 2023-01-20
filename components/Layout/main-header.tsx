@@ -28,14 +28,12 @@ function MainHeader() {
     <header className={`${classes.primaryHeader} ${classes.flex}`}>
       <div className={classes.logo}>
         <Link href="/">
-          <a>
-            <Image
-              src="/nikas-journey-logo.png"
-              alt="Nikas Journey Logo"
-              width={48}
-              height={48}
-            />
-          </a>
+          <Image
+            src="/nikas-journey-logo.png"
+            alt="Nikas Journey Logo"
+            width={48}
+            height={48}
+          />
         </Link>
       </div>
 
@@ -96,15 +94,14 @@ function MainHeader() {
             // </li>
             <>
               <li>
-                <Link href="/api/auth/signout">
-                  <a
-                    onClick={(e: React.MouseEvent<HTMLElement>) => {
-                      e.preventDefault;
-                      signOut();
-                    }}
-                  >
-                    Sign Out
-                  </a>
+                <Link
+                  href="/api/auth/signout"
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    e.preventDefault;
+                    signOut();
+                  }}
+                >
+                  Sign Out
                 </Link>
               </li>
               <li>
