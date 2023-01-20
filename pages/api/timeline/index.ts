@@ -27,7 +27,7 @@ export default async function handler(
                   include: {
                     route: {
                       select: {
-                        coordinates: true,
+                        simplifiedCoordinates: true,
                         travelDayId: true,
                       },
                     },

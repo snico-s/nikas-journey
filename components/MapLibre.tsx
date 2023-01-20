@@ -19,7 +19,7 @@ const makeLineString = (id: string, coordinates: Position[]) => {
 
 type Route = {
   travelDayId: string;
-  coordinates: Position[];
+  simplifiedCoordinates: Position[];
 };
 
 type Props = {
@@ -61,9 +61,11 @@ function MapLibre({ onClick, selected, hovered, onHover }: Props) {
 
         console.log(routes);
         const features = routes.map((route) => {
+          console.log(route);
           const line = route
             .map((routeItem) => {
-              return routeItem.coordinates;
+              console.log(routeItem);
+              return routeItem.simplifiedCoordinates;
             })
             .flat();
           return makeLineString(route[0].travelDayId, line);
@@ -134,7 +136,7 @@ function MapLibre({ onClick, selected, hovered, onHover }: Props) {
     if (!selectedRoute) return;
 
     const coordinates = selectedRoute
-      .map((routes) => routes.coordinates)
+      .map((routes) => routes.simplifiedCoordinates)
       .flat();
 
     // Create a 'LngLatBounds' with both corners at the first coordinate.

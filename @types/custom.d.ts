@@ -14,7 +14,7 @@ type routeData = {
 type TravelDayData = {
   date: Date;
   totalDistance: number;
-  lineString: Feature<LineString, LineStringProperties>;
+  lineString: GeoJSON.Feature<LineString, LineStringProperties>;
   fileData: fileData[];
 };
 

@@ -68,12 +68,11 @@ model Route {
   type String
   // route Unsupported("geometry(LineString, 4326)")
 
-  coordinates Json
-  properties  Json
-  travelDayId Int?
-  travelDay   TravelDay? @relation(fields: [travelDayId], references: [id])
-
-  // @@index([route], name: "route_idx", type: Gist)
+  coordinates           Json
+  simplifiedCoordinates Json
+  properties            Json
+  travelDayId           Int?
+  travelDay             TravelDay? @relation(fields: [travelDayId], references: [id])
 }
 
 model Payment {

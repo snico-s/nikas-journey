@@ -1,4 +1,4 @@
-import { Feature } from "@turf/turf";
+import { Feature, simplify } from "@turf/turf";
 import { LineString } from "geojson";
 import React, { useEffect, useState } from "react";
 import UploadIcon from "./UploadIcon";
@@ -28,8 +28,16 @@ const RouteFileDataCard = (props: Props) => {
     console.log("Upload");
     setIsLoading(true);
     const route = props.route;
+    const simplifiedCoordinates = simplify(props.route, { tolerance: 0.001 });
+    // const simplifiedCoordinates =
+    //   props.simplifiedLineString.geometry.coordinates;
 
-    const form = { date, route, distance };
+    const form = {
+      date,
+      route,
+      distance,
+      simplifiedCoordinates: simplifiedCoordinates.geometry.coordinates,
+    };
 
     try {
       const res = await fetch("/api/travel-day", {

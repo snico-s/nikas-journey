@@ -31,6 +31,7 @@ export default async function handler(
     case "POST":
       try {
         const route = req.body.route;
+        const simplifiedCoordinates = req.body.simplifiedCoordinates;
         let travelDayId: number | null = null;
 
         //check if date exists
@@ -50,6 +51,7 @@ export default async function handler(
               data: {
                 type: route.geometry.type,
                 coordinates: route.geometry.coordinates,
+                simplifiedCoordinates: simplifiedCoordinates,
                 properties: route.properties,
                 travelDayId: travelDayId,
               },
@@ -70,6 +72,7 @@ export default async function handler(
                 create: {
                   type: route.geometry.type,
                   coordinates: route.geometry.coordinates,
+                  simplifiedCoordinates: simplifiedCoordinates,
                   properties: route.properties,
                 },
               },

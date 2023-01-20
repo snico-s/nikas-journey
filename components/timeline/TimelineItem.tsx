@@ -1,10 +1,9 @@
 import { TravelDay } from "@prisma/client";
-import moment from "moment";
 import React, { useRef, Dispatch, SetStateAction, useState } from "react";
 
 type Props = {
   travelDay: TravelDay;
-  startDate: Date | undefined;
+  startDate: Date;
   selected: boolean;
   hovered: boolean;
   last: boolean;
@@ -33,8 +32,12 @@ function TimelineItem({
   // Destructure Item-Data
   const { id, date, title, body, distance } = travelDay;
 
-  let day = moment(date).diff(moment(startDate), "days");
-  if (day >= 0) day++;
+  // To calculate the time difference of two dates
+  const Difference_In_Time =
+    new Date(date).getTime() - new Date(startDate).getTime();
+
+  // To calculate the no. of days between two dates
+  const day = Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
 
   const jsDate = new Date(date);
 

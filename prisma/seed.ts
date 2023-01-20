@@ -22,7 +22,7 @@ async function main() {
     update: {},
     create: {
       name: "main",
-      startDate: new Date("2022-04-03"),
+      startDate: new Date("2022-04-05"),
       users: {
         connectOrCreate: {
           where: { id: 1 },
