@@ -14,7 +14,6 @@ function AdminPage({}: Props) {
           <Link href="/admin/ausgaben">Zu den Ausgaben</Link>
         </button>
       </div>
-      <h2 className="text-2xl my-2">Zu den Routen</h2>
     </div>
   );
 }
