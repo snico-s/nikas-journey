@@ -27,9 +27,18 @@ type Props = {
   selected: string | null;
   hovered: string | null;
   onHover: Dispatch<SetStateAction<string | null>>;
+  userId: number;
+  timeLineName: string;
 };
 
-function MapLibre({ onClick, selected, hovered, onHover }: Props) {
+function MapLibre({
+  onClick,
+  selected,
+  hovered,
+  onHover,
+  userId,
+  timeLineName,
+}: Props) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const prevSelected: string | null | undefined = usePrevious(selected);
@@ -39,7 +48,10 @@ function MapLibre({ onClick, selected, hovered, onHover }: Props) {
     data: routes,
     error,
     isLoading,
-  } = useSWR<Route[][]>("/api/timeline", fetcher);
+  } = useSWR<Route[][]>(
+    `/api/timeline/${userId}/${timeLineName}/simplified`,
+    fetcher
+  );
 
   useEffect(() => {
     if (map.current) return;

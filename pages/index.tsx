@@ -28,6 +28,8 @@ function RoutePage({ travelDays, startDate }: Props) {
           selected={selectedRoute}
           hovered={hoveredRoute}
           onHover={setHoverRoute}
+          userId={1}
+          timeLineName={"main"}
         />
 
         <div className="bg-white w-full h-80 overflow-y-auto md:h-full">
