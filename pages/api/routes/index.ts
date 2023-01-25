@@ -70,15 +70,12 @@ export default async function handler(
 //       break;
 //     case "POST":
 //       try {
-//         console.log(typeof req.body);
 //         const id = new mongoose.Types.ObjectId();
 //         req.body.route.id = id;
 //         req.body._id = id;
-//         console.log(req.body);
 //         const route: routeData = await Route.create(req.body);
 //         res.status(201).json({ success: true, data: route });
 //       } catch (error) {
-//         console.log(error);
 //         res.status(400).json({ success: false });
 //       }
 //       break;

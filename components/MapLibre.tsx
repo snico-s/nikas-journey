@@ -71,12 +71,9 @@ function MapLibre({
         // Add GeoJson
         if (!routes) return;
 
-        console.log(routes);
         const features = routes.map((route) => {
-          console.log(route);
           const line = route
             .map((routeItem) => {
-              console.log(routeItem);
               return routeItem.simplifiedCoordinates;
             })
             .flat();
@@ -87,8 +84,6 @@ function MapLibre({
           type: "FeatureCollection",
           features: features,
         };
-
-        console.log(featureCollection);
 
         featureCollection.features.forEach((feature) => {
           if (!map.current) return;

@@ -65,7 +65,6 @@ const EditTravelDay = ({ id }: Props) => {
   //           const result: string = evt.target.result;
   //           const fc = gpx(new DOMParser().parseFromString(result, "text/xml"));
 
-  //           console.log(fc);
   //           if (fc.features.length < 1) {
   //             setErrors({ features: "Keine Features vorhanden" });
   //             return console.error("Keine Fearutes vorhanden");

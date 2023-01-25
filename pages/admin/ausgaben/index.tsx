@@ -15,7 +15,6 @@ const index = (props: Props) => {
     const fetchData = async () => {
       const response = await fetch("/api/payments");
       const json = await response.json();
-      console.log(json.data);
       setPayments(json.data);
     };
 

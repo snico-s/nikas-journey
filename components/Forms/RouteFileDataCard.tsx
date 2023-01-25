@@ -25,7 +25,6 @@ const RouteFileDataCard = (props: Props) => {
   }, [props.upload]);
 
   const handleUpload = async () => {
-    console.log("Upload");
     setIsLoading(true);
     const route = props.route;
     const simplifiedCoordinates = simplify(props.route, { tolerance: 0.001 });

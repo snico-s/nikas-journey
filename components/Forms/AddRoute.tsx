@@ -83,7 +83,6 @@ const AddRoute = ({ route, setRoute, setDate }: Props) => {
 
     if (target.files != null && target.files.length > 0) {
       const file = target.files[0];
-      console.log(file);
 
       const reader = new FileReader();
       reader.readAsText(file, "UTF-8");
@@ -98,8 +97,6 @@ const AddRoute = ({ route, setRoute, setDate }: Props) => {
             if (fc.features.length < 1) {
               return console.error("Keine Fearutes vorhanden");
             }
-
-            console.log(fc);
 
             let properties = {};
             let geoJson = {
@@ -136,26 +133,13 @@ const AddRoute = ({ route, setRoute, setDate }: Props) => {
               }
             }
 
-            var length = turfLength(geoJson, { units: "kilometers" });
-            console.log(
-              "🚀 ~ file: AddRoute.tsx ~ line 140 ~ handleGpxInput ~ length",
-              length
-            );
-
             // Read Date
             if (geoJson.properties != null && geoJson.properties.time != null) {
               const time: string = geoJson.properties.time;
               setDate(time.slice(0, 10));
             }
-
-            console.log(geoJson);
             const options = { tolerance: 0.001, highQuality: false };
             const simplified = simplify(geoJson, options);
-            console.log(simplified);
-
-            var optionsTruncate = { precision: 3 };
-            var truncated = truncate(simplified, optionsTruncate);
-            console.log(truncated);
 
             setRoute(simplified);
           }
@@ -181,7 +165,6 @@ const AddRoute = ({ route, setRoute, setDate }: Props) => {
             maxLength={20}
             name="gpx"
             onChange={handleGpxInput}
-            onClick={() => console.log("hier")}
           />
         </div>
       </div>

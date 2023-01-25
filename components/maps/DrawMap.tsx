@@ -68,9 +68,7 @@ const DrawMap = ({}: Props) => {
       });
 
       // @ts-ignore
-      map.current.on("draw.create", function (e: DrawCreateEvent) {
-        console.log("create");
-      });
+      map.current.on("draw.create", function (e: DrawCreateEvent) {});
 
       //     map.current.on(
       //       "draw.selectionchange",
@@ -84,17 +82,13 @@ const DrawMap = ({}: Props) => {
   }, []);
 
   // useEffect(() => {
-  //   console.log(selected);
   //   if (!draw.current) return;
 
   //   if (selected.length > 0) {
   //     draw.current.setFeatureProperty("" + selected[0]?.id, "portWidth", 8);
   //   } else {
-  //     console.log("else");
   //     // if (prevSelectedRef.current.length > 0) {
   //     if (prev) {
-  //       console.log("current vorhanden");
-  //       console.log(prev[0].id);
   //       draw.current.setFeatureProperty("" + prev[0]?.id, "portWidth", 2);
   //     }
   //     // }
