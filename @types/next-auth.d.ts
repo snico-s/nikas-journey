@@ -7,6 +7,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     /** OpenID ID Token */
     isAdmin: boolean;
+    id: number;
   }
 }
 
@@ -18,10 +19,12 @@ declare module "next-auth" {
     user: {
       /** The user's postal address. */
       isAdmin: boolean;
+      id: number;
     } & DefaultSession["user"];
   }
 
   interface User {
     isAdmin: boolean;
+    id: number;
   }
 }
