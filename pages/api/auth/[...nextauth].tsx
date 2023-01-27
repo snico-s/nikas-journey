@@ -1,5 +1,4 @@
 import NextAuth from "next-auth/next";
-import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare, hash } from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
@@ -17,6 +16,7 @@ export default NextAuth({
         // Add logic here to look up the user from the credentials supplied
         // const user = { id: 1, name: "J Smith", email: "jsmith@example.com" };
         try {
+          console.log("authorize");
           const prisma = new PrismaClient();
 
           const user = await prisma.user.findUnique({
@@ -45,16 +45,16 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       // Persist the OAuth access_token to the token right after signin
-
       if (user) {
         token.isAdmin = user.isAdmin;
+        token.id = +user.id;
       }
       return token;
     },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
-      // session.user.isAdmin = user.isAdmin;
       session.user.isAdmin = token.isAdmin;
+      session.user.id = token.id;
       return session;
     },
   },
