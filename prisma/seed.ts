@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 async function main() {
   const password = process.env.START_PWD;
-  console.log(password);
 
   const nika = await prisma.user.upsert({
     where: { id: 1 },
