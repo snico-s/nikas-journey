@@ -12,13 +12,15 @@ datasource db {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  name     String
-  email    String     @unique
-  isAdmin  Boolean    @default(false)
-  password String
-  posts    Post[]
-  timeLine TimeLine[]
+  id        Int         @id @default(autoincrement())
+  name      String
+  email     String      @unique
+  isAdmin   Boolean     @default(false)
+  password  String
+  posts     Post[]
+  timeLine  TimeLine[]
+  Route     Route[]
+  TravelDay TravelDay[]
 }
 
 model TimeLine {
@@ -53,14 +55,17 @@ model TimeLineHasTravelDays {
 }
 
 model TravelDay {
-  id                 Int                     @id @default(autoincrement())
-  title              String?
-  body               String?
-  date               DateTime                @unique
-  distance           Decimal?
+  id       Int      @id @default(autoincrement())
+  title    String?
+  body     String?
+  date     DateTime @unique //TODO: Ueberfluessig?
+  distance Decimal?
+  userId   Int
+
   payments           Payment[]
   route              Route[]
   timeLineTravelDays TimeLineHasTravelDays[]
+  user               User                    @relation(fields: [userId], references: [id])
 }
 
 model Route {
@@ -72,7 +77,10 @@ model Route {
   simplifiedCoordinates Json
   properties            Json
   travelDayId           Int?
-  travelDay             TravelDay? @relation(fields: [travelDayId], references: [id])
+  createdBy             Int?
+
+  travelDay TravelDay? @relation(fields: [travelDayId], references: [id])
+  User      User?      @relation(fields: [createdBy], references: [id])
 }
 
 model Payment {
