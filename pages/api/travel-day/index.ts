@@ -34,17 +34,21 @@ export default async function handler(
         const simplifiedCoordinates = req.body.simplifiedCoordinates;
         let travelDayId: number | null = null;
 
+        const session = await unstable_getServerSession(req, res, authOptions);
+        if (!session) return res.status(400).json({ msg: "No Session" });
+        const userId = session.user.id;
+
         //check if date exists
-        let existingTravelDay = await prisma.travelDay.findUnique({
+        let existingTravelDay = await prisma.travelDay.findMany({
           where: {
             date: new Date(req.body.date),
+            userId: userId,
           },
         });
-
         console.log(existingTravelDay);
 
-        if (existingTravelDay !== null) {
-          travelDayId = existingTravelDay.id;
+        if (existingTravelDay.length > 0) {
+          travelDayId = existingTravelDay[0].id;
 
           if (Object.keys(route).length > 0) {
             await prisma.route.create({
@@ -54,20 +58,41 @@ export default async function handler(
                 simplifiedCoordinates: simplifiedCoordinates,
                 properties: route.properties,
                 travelDayId: travelDayId,
+                createdBy: userId,
               },
             });
           }
         } else {
-          let travelDay: Prisma.TravelDayCreateInput = {
+          if (!userId) return res.status(400).json({ success: false });
+
+          // let travelDay = {
+          //   title: req.body.title,
+          //   date: new Date(req.body.date),
+          //   body: req.body.body,
+          //   distance: req.body.distance,
+          //   userId: userId,
+          // };
+
+          if (Object.keys(route).length > 0) {
+            //   travelDay = {
+            //     ...travelDay,
+            //     route: {
+            //       create: {
+            //         type: route.geometry.type,
+            //         coordinates: route.geometry.coordinates,
+            //         simplifiedCoordinates: simplifiedCoordinates,
+            //         properties: route.properties,
+            //       },
+            //     },
+            //   };
+
+            const createTravelDay = await prisma.travelDay.create({
+              data: {
             title: req.body.title,
             date: new Date(req.body.date),
             body: req.body.body,
             distance: req.body.distance,
-          };
-
-          if (Object.keys(route).length > 0) {
-            travelDay = {
-              ...travelDay,
+                userId: userId,
               route: {
                 create: {
                   type: route.geometry.type,
@@ -76,10 +101,7 @@ export default async function handler(
                   properties: route.properties,
                 },
               },
-            };
-
-            const createTravelDay = await prisma.travelDay.create({
-              data: travelDay,
+              },
             });
 
             travelDayId = createTravelDay.id;
