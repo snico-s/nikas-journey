@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-
-import { Prisma, PrismaClient, TravelDay } from "@prisma/client";
-// import { LineString } from "geojson";
+import { PrismaClient, TravelDay } from "@prisma/client";
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
 const prisma = new PrismaClient();
 
@@ -12,17 +12,21 @@ type Data = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
   switch (req.method) {
     case "GET":
       try {
         const routes = await prisma.travelDay.findMany({
           include: {
-            route: true,
+            timeLineTravelDays: {
+              include: {
+                timeLine: true,
+              },
+            },
           },
         });
-        res.status(200).json({ success: true, data: routes });
+        res.status(200).json(routes);
       } catch (error) {
         res.status(400).json({ success: false });
       }
@@ -88,19 +92,19 @@ export default async function handler(
 
             const createTravelDay = await prisma.travelDay.create({
               data: {
-            title: req.body.title,
-            date: new Date(req.body.date),
-            body: req.body.body,
-            distance: req.body.distance,
+                title: req.body.title,
+                date: new Date(req.body.date),
+                body: req.body.body,
+                distance: req.body.distance,
                 userId: userId,
-              route: {
-                create: {
-                  type: route.geometry.type,
-                  coordinates: route.geometry.coordinates,
-                  simplifiedCoordinates: simplifiedCoordinates,
-                  properties: route.properties,
+                route: {
+                  create: {
+                    type: route.geometry.type,
+                    coordinates: route.geometry.coordinates,
+                    simplifiedCoordinates: simplifiedCoordinates,
+                    properties: route.properties,
+                  },
                 },
-              },
               },
             });
 
@@ -123,7 +127,6 @@ export default async function handler(
 
         res.status(201).json({ success: true });
       } catch (error) {
-        console.log(error);
         res.status(400).json({ success: false });
       }
       break;

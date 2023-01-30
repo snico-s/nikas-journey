@@ -19,13 +19,6 @@ export default async function handler(
           where: {
             userId: Number(userId),
           },
-          include: {
-            timeLineHasTravelDays: {
-              include: {
-                travelDays: true,
-              },
-            },
-          },
         });
 
         res.status(200).json(timeLine);
