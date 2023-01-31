@@ -49,7 +49,6 @@ export default async function handler(
             userId: userId,
           },
         });
-        console.log(existingTravelDay);
 
         if (existingTravelDay.length > 0) {
           travelDayId = existingTravelDay[0].id;

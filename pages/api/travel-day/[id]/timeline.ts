@@ -17,6 +17,8 @@ export default async function handler(
     method,
   } = req;
 
+  if (typeof id !== "string") return res.status(400);
+
   switch (method) {
     case "GET" /* Get a model by its ID */:
       try {
@@ -47,6 +49,17 @@ export default async function handler(
 
     case "DELETE":
       try {
+        const { timeLineId } = req.body;
+
+        await prisma.timeLineHasTravelDays.delete({
+          where: {
+            timeLineId_travelDayId: {
+              timeLineId: +timeLineId,
+              travelDayId: +id,
+            },
+          },
+        });
+
         res.status(200).json({ success: true });
       } catch (error) {
         res.status(400).json({ success: false });
@@ -58,11 +71,3 @@ export default async function handler(
       break;
   }
 }
-
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "10mb", // Set desired value here
-    },
-  },
-};

@@ -17,8 +17,10 @@ export default async function handler(
     method,
   } = req;
 
+  if (typeof id !== "string") return res.status(400).json({ success: false });
+
   switch (method) {
-    case "GET" /* Get a model by its ID */:
+    case "GET":
       try {
         const travelDay = await prisma.travelDay.findMany({
           where: {
@@ -34,7 +36,7 @@ export default async function handler(
       }
       break;
 
-    case "PUT" /* Edit a model by its ID */:
+    case "PUT":
       try {
         const { date, title, body, distance } = req.body.travelDay;
         const travelDay = await prisma.travelDay.update({
@@ -56,15 +58,21 @@ export default async function handler(
       break;
 
     case "DELETE" /* Delete a model by its ID */:
+      console.log("/api/travel-day/", id, " DELETE");
       try {
+        const timeLine = await prisma.timeLineHasTravelDays.deleteMany({
+          where: { travelDayId: +id },
+        });
         const travelDay = await prisma.travelDay.delete({
           where: { id: +id },
         });
+        console.log({ travelDay, timeLine });
         if (!travelDay) {
           return res.status(400).json({ success: false });
         }
         res.status(200).json({ success: true });
       } catch (error) {
+        console.log(error);
         res.status(400).json({ success: false });
       }
       break;

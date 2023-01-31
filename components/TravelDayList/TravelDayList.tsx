@@ -12,6 +12,9 @@ const TravelDayList = () => {
   const [showAddToCollection, setShowAddToCollection] = useState(false);
   const [showDelete, setShowDeleteModal] = useState(false);
   const [selectedTravelDayId, setSelectedTravelDayId] = useState(0);
+  const [deleteTravelDayId, setDeleteTravelDayId] = useState<number | null>(
+    null
+  );
   const [selectedTimeLine, setSelectedTimeLine] = useState(1);
 
   const { data: session } = useSession();
@@ -34,7 +37,6 @@ const TravelDayList = () => {
     error: error2,
     isLoading: isLoading2,
   } = useSWR<TimeLine[]>(`/api/timeline/${userId}`, fetcher);
-  console.log(timelines);
 
   if (isLoading || isLoading2)
     return (
@@ -49,7 +51,7 @@ const TravelDayList = () => {
   const handleAddToCollection = async () => {
     try {
       const res = await fetch(
-        "/api/travel-day/" + selectedTravelDayId + "/add-to-collection/",
+        "/api/travel-day/" + selectedTravelDayId + "/timeline/",
         {
           method: "POST",
           headers: {
@@ -69,7 +71,49 @@ const TravelDayList = () => {
     } catch (error) {}
   };
 
-  console.log(travelDays);
+  const handleDeleteTravelDay = async () => {
+    console.log("handleDeleteTravelDay");
+    try {
+      if (!deleteTravelDayId) return;
+      const res = await fetch("/api/travel-day/" + deleteTravelDayId, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Throw error with status code in case Fetch API req failed
+      if (!res.ok) {
+        throw new Error("Status" + res.status);
+      }
+      setDeleteTravelDayId(null);
+      console.log("DELETED");
+    } catch (error) {}
+  };
+
+  const handleDeleteFromTimeline = async (
+    travelDayId: number,
+    timelineId: number
+  ) => {
+    try {
+      const res = await fetch("/api/travel-day/" + travelDayId + "/timeline/", {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ timeLineId: timelineId }),
+      });
+
+      // Throw error with status code in case Fetch API req failed
+      if (!res.ok) {
+        throw new Error("Status" + res.status);
+      }
+
+      setShowAddToCollection(false);
+    } catch (error) {}
+  };
 
   return (
     <div>
@@ -89,8 +133,9 @@ const TravelDayList = () => {
               <div>Text: {day.body ? day.body.slice(0, 200) + " ..." : ""}</div>
               <div>
                 Collections:{" "}
-                {day.timeLineTravelDays.map((timelines) => (
+                {day.timeLineTravelDays.map((timelines, index) => (
                   <div
+                    key={index}
                     className="inline-flex rounded-md shadow-sm"
                     role="group"
                   >
@@ -104,6 +149,12 @@ const TravelDayList = () => {
                     <button
                       type="button"
                       className="px-3 text-xs font-medium text-gray-900 bg-white border border-l-0 border-gray-200 rounded-r-md hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700"
+                      onClick={() =>
+                        handleDeleteFromTimeline(
+                          timelines.travelDayId,
+                          timelines.timeLineId
+                        )
+                      }
                     >
                       X
                     </button>
@@ -132,7 +183,13 @@ const TravelDayList = () => {
                 Zur Timeline hinzufügen
               </button>
 
-              <button onClick={() => setShowDeleteModal(true)} className="btn">
+              <button
+                onClick={() => {
+                  setDeleteTravelDayId(day.id);
+                  setShowDeleteModal(true);
+                }}
+                className="btn"
+              >
                 Löschen
               </button>
             </div>
@@ -162,17 +219,17 @@ const TravelDayList = () => {
       ) : (
         ""
       )}
-      {/* {showDelete ? (
+      {showDelete ? (
         <Modal
           setShowModal={setShowDeleteModal}
-          onSubmit={() => return}
+          onSubmit={handleDeleteTravelDay}
           title="Tag löschen"
         >
           Wirklich löschen?
         </Modal>
       ) : (
         ""
-      )} */}
+      )}
     </div>
   );
 };
