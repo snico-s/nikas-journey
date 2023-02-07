@@ -1,5 +1,7 @@
 import { Payment, PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 type Data = {
   success: boolean;
@@ -11,6 +13,8 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const prisma = new PrismaClient();
+  const session = await unstable_getServerSession(req, res, authOptions);
+  const user = session?.user;
 
   switch (req.method) {
     case "GET":
@@ -32,6 +36,7 @@ export default async function handler(
       break;
     case "POST":
       try {
+        if (!user) return res.status(400);
         const payment = await prisma.payment.create({
           data: {
             amount: req.body.amount,
@@ -49,6 +54,7 @@ export default async function handler(
                 },
                 create: {
                   date: new Date(req.body.date),
+                  userId: +user?.id,
                 },
               },
             },
