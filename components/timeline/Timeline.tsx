@@ -5,7 +5,7 @@ import TimelineItem from "./TimelineItem";
 
 type Props = {
   travelDays: TravelDay[];
-  startDate: Date | undefined;
+  startDate: Date;
   onClick: Dispatch<SetStateAction<string | null>>;
   onHover: Dispatch<SetStateAction<string | null>>;
   selected: string | null;
@@ -20,8 +20,13 @@ function Timeline({
   selected,
   hovered,
 }: Props) {
-  const itemEls = useRef({});
   const length = travelDays.length;
+  let totalDistance = 0.0;
+  travelDays.forEach((travelDay) => {
+    if (!travelDay.distance) return;
+    totalDistance += +travelDay.distance;
+  });
+  console.log(totalDistance);
 
   useEffect(() => {
     if (!selected) return;
@@ -35,22 +40,25 @@ function Timeline({
   }, [selected]);
 
   return (
-    <ol className="relativ p-2 bg-white">
-      {travelDays.map((travelDay, index) => (
-        <TimelineItem
-          key={travelDay.id}
-          travelDay={travelDay}
-          startDate={startDate}
-          selected={selected == "" + travelDay.id}
-          hovered={hovered == "" + travelDay.id}
-          onClick={onClick}
-          onHover={onHover}
-          last={index + 1 === length}
-          first={index === 0}
-          // ref={(element) => (itemEls.current[index] = element)}
-        />
-      ))}
-    </ol>
+    <div className="relativ p-2 bg-white">
+      Gesamtkilometer: {totalDistance.toFixed(2)}
+      <ol>
+        {travelDays.map((travelDay, index) => (
+          <TimelineItem
+            key={travelDay.id}
+            travelDay={travelDay}
+            startDate={startDate}
+            selected={selected == "" + travelDay.id}
+            hovered={hovered == "" + travelDay.id}
+            onClick={onClick}
+            onHover={onHover}
+            last={index + 1 === length}
+            first={index === 0}
+            // ref={(element) => (itemEls.current[index] = element)}
+          />
+        ))}
+      </ol>
+    </div>
   );
 }
 

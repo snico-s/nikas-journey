@@ -3,11 +3,12 @@ import Head from "next/head";
 import MapLibre from "../components/MapLibre";
 import Timeline from "../components/timeline/Timeline";
 import { GetServerSideProps } from "next";
-import { PrismaClient, TravelDay } from "@prisma/client";
+import prisma from "../lib/prisma";
+import { TravelDay } from "@prisma/client";
 
 type Props = {
   travelDays: TravelDay[];
-  startDate: Date | undefined;
+  startDate: Date;
 };
 
 function RoutePage({ travelDays, startDate }: Props) {
@@ -48,19 +49,26 @@ function RoutePage({ travelDays, startDate }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const prisma = new PrismaClient();
+  // TODO: dynamic userID, timelineName
+  const userId = 1;
+  const timelineName = "main";
 
   const data = await prisma.timeLine.findUnique({
     where: {
       userId_name: {
-        userId: 1,
-        name: "main",
+        userId: userId,
+        name: timelineName,
       },
     },
     include: {
       timeLineHasTravelDays: {
         include: {
           travelDays: true,
+        },
+        orderBy: {
+          travelDays: {
+            date: "desc",
+          },
         },
       },
     },
@@ -70,13 +78,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     (travelDay) => travelDay.travelDays
   );
 
-  const sortedTravelDay = travelDays?.sort((a, b) => {
-    return new Date(b.date).getTime() - new Date(a.date).getTime();
-  });
   const startDate = data?.startDate.toDateString();
+  const travelDaysParsed = JSON.parse(JSON.stringify(travelDays));
 
-  const travelDaysParsed = JSON.parse(JSON.stringify(sortedTravelDay));
-  // Pass data to the page via props
   return { props: { travelDays: travelDaysParsed, startDate } };
 };
 

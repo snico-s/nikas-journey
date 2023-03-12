@@ -1,6 +1,7 @@
-import { Payment, PrismaClient } from "@prisma/client";
+import { Payment } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
+import prisma from "../../../lib/prisma";
 import { authOptions } from "../auth/[...nextauth]";
 
 type Data = {
@@ -12,7 +13,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const prisma = new PrismaClient();
   const session = await unstable_getServerSession(req, res, authOptions);
   const user = session?.user;
 

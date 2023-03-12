@@ -1,5 +1,5 @@
-import { Payment, PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
+import prisma from "../../../lib/prisma";
 
 type Data = {
   success: boolean;
@@ -10,8 +10,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const prisma = new PrismaClient();
-
   switch (req.method) {
     case "GET":
       try {

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { LineString, MultiLineString } from "geojson";
 import { gpx } from "@tmcw/togeojson";
-import { Prisma, PrismaClient, TravelDay } from "@prisma/client";
+import { TravelDay } from "@prisma/client";
 
 type Props = {
   id: number;
@@ -220,7 +220,7 @@ const EditTravelDay = ({ id }: Props) => {
               />
             </div>
 
-            <button type="submit" className="btn">
+            <button type="submit" className="btn btn-primary">
               Submit
             </button>
           </form>

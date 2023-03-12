@@ -1,5 +1,6 @@
-import { PrismaClient, Route } from "@prisma/client";
+import { Route } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
+import prisma from "../../../../lib/prisma";
 
 type Data = {
   success: boolean;
@@ -10,8 +11,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const prisma = new PrismaClient();
-
   const {
     query: { id },
     method,
@@ -28,6 +27,7 @@ export default async function handler(
     case "POST" /* Edit a model by its ID */:
       try {
         const { route } = req.body;
+        if (!id) return res.status(400).json({ success: false });
 
         const routeCreate = await prisma.route.create({
           data: {

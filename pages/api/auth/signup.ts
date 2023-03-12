@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { hash } from "bcryptjs";
-import { PrismaClient, User } from "@prisma/client";
+import { User } from "@prisma/client";
+import prisma from "../../../lib/prisma";
 
 type Data = {
   message: string;
@@ -8,8 +9,6 @@ type Data = {
 };
 
 async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  const prisma = new PrismaClient();
-
   //Only POST mothod is accepted
   if (req.method === "POST") {
     const { email, name, password } = req.body;

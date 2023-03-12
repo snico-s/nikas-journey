@@ -1,4 +1,5 @@
-import { Currency, PrismaClient } from "@prisma/client";
+import { Currency } from "@prisma/client";
+import prisma from "../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -10,8 +11,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const prisma = new PrismaClient();
-
   switch (req.method) {
     case "GET":
       try {

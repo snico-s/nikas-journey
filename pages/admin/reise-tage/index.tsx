@@ -2,14 +2,10 @@ import React from "react";
 import Link from "next/link";
 import TravelDayList from "../../../components/TravelDayList/TravelDayList";
 import { GetServerSideProps } from "next";
-import {
-  PrismaClient,
-  TimeLine,
-  TimeLineHasTravelDays,
-  TravelDay,
-} from "@prisma/client";
+import { TimeLine, TimeLineHasTravelDays, TravelDay } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
+import prisma from "../../../lib/prisma";
 
 type Props = {
   userTravelDays: (TravelDay & {
@@ -21,12 +17,10 @@ type Props = {
 };
 
 function TravelDaysPage({ userTimelines, userTravelDays }: Props) {
-  console.log(userTravelDays);
-  console.log(userTimelines);
   return (
     <div className="container mx-auto px-4">
       <h2 className="text-2xl my-2">Deine Reisetage</h2>
-      <button className="btn">
+      <button className="btn btn-primary btn-sm btn-outline">
         <Link href="/admin/reise-tage/erstellen">Reise-Tag erstellen</Link>
       </button>
       <div className="m-2">
@@ -37,7 +31,6 @@ function TravelDaysPage({ userTimelines, userTravelDays }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const prisma = new PrismaClient();
   const session = await unstable_getServerSession(
     context.req,
     context.res,

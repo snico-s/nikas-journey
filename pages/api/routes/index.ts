@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { PrismaClient, TravelDay } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { TravelDay } from "@prisma/client";
+import prisma from "../../../lib/prisma";
 
 type routeData = {
   date: string;

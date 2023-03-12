@@ -1,5 +1,6 @@
-import { PrismaClient, Route, TimeLineHasTravelDays } from "@prisma/client";
+import { TimeLineHasTravelDays } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
+import prisma from "../../../../lib/prisma";
 
 type Data = {
   success: boolean;
@@ -10,8 +11,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const prisma = new PrismaClient();
-
   const {
     query: { id },
     method,
