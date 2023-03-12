@@ -53,7 +53,7 @@ const AddRouteForm = ({ id }: Props) => {
             {/* GPX Upload */}
             <AddRoute route={route} setRoute={setRoute} />
 
-            <button type="submit" className="btn">
+            <button type="submit" className="btn btn-primary">
               Submit
             </button>
           </form>

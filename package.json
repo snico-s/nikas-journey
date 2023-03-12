@@ -24,6 +24,7 @@
     "@types/uuid": "^8.3.4",
     "bcryptjs": "^2.4.3",
     "caniuse-lite": "^1.0.30001427",
+    "daisyui": "^2.51.3",
     "express": "^4.17.3",
     "leaflet": "^1.7.1",
     "leaflet-defaulticon-compatibility": "^0.1.1",

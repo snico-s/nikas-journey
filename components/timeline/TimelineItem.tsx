@@ -109,7 +109,7 @@ function TimelineItem({
 
             {body?.length > 250 ? (
               <div className="mt-4">
-                <button onClick={toggleReadMore} className="btn">
+                <button onClick={toggleReadMore} className="btn btn-primary">
                   {isReadMore ? "Weiter lesen" : "Weniger"}
                   {isReadMore ? (
                     <svg

@@ -89,7 +89,11 @@ const SignUp = (props: Props) => {
           />
         </div>
 
-        <button type="submit" className="btn" onClick={handleSubmit}>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          onClick={handleSubmit}
+        >
           Submit
         </button>
       </div>

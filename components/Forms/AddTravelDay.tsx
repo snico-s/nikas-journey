@@ -124,7 +124,7 @@ const AddTravelDay = () => {
                 />
               </div>
 
-              <button type="submit" className="btn">
+              <button type="submit" className="btn btn-primary">
                 Submit
               </button>
             </form>

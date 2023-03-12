@@ -107,18 +107,20 @@ const TravelDayList = ({ travelDays, timelines }: Props) => {
           .map((day) => (
             <li
               key={day.id}
-              className="block mb-2 bg-white border border-gray-200 rounded-lg shadow hover:border-green-500"
+              // className="card block mb-2 bg-white border border-gray-200 rounded-lg shadow hover:border-green-500"
+              className="card card-compact card-bordered bg-base-100 shadow-xl mb-2"
             >
-              <div className="bg-gray-100 p-2 rounded-t-lg flex items-center">
-                <h5 className="text-xl py-2 font-bold leading-none text-gray-900 ">
+              <div className="card-body">
+                {/* <div className="bg-gray-100 p-2 rounded-t-lg flex items-center"> */}
+                {/* <h5 className="text-xl py-2 font-bold leading-none text-gray-900 "> */}
+                <h5 className="card-title">
                   <time>
                     <Suspense fallback={<div></div>}>
                       {new Date(day.date).toLocaleDateString()}
                     </Suspense>
                   </time>
                 </h5>
-              </div>
-              <div className="p-2">
+                {/* </div> */}
                 <div>Titel: {day.title}</div>
                 <div>
                   Text: {day.body ? day.body.slice(0, 200) + " ..." : ""}
@@ -154,39 +156,41 @@ const TravelDayList = ({ travelDays, timelines }: Props) => {
                     </div>
                   ))}
                 </div>
-              </div>
-
-              <div className="flex flex-wrap mt-4">
-                <button className="btn">
-                  <Link href={"reise-tage/bearbeiten/" + day.id}>
+                <div className="card-actions">
+                  <Link
+                    className="btn btn-primary btn-sm btn-outline"
+                    href={"reise-tage/bearbeiten/" + day.id}
+                  >
                     Bearbeiten
                   </Link>
-                </button>
-                <button className="btn">
-                  <Link href={"reise-tage/" + day.id + "/route-hinzufuegen"}>
+
+                  <Link
+                    className="btn btn-primary btn-sm btn-outline"
+                    href={"reise-tage/" + day.id + "/route-hinzufuegen"}
+                  >
                     Route hinzufügen
                   </Link>
-                </button>
 
-                <button
-                  onClick={() => {
-                    setSelectedTravelDayId(day.id);
-                    setShowAddToCollection(true);
-                  }}
-                  className="btn"
-                >
-                  Zur Timeline hinzufügen
-                </button>
+                  <button
+                    onClick={() => {
+                      setSelectedTravelDayId(day.id);
+                      setShowAddToCollection(true);
+                    }}
+                    className="btn btn-primary btn-sm btn-outline"
+                  >
+                    Zur Timeline hinzufügen
+                  </button>
 
-                <button
-                  onClick={() => {
-                    setDeleteTravelDayId(day.id);
-                    setShowDeleteModal(true);
-                  }}
-                  className="btn"
-                >
-                  Löschen
-                </button>
+                  <button
+                    onClick={() => {
+                      setDeleteTravelDayId(day.id);
+                      setShowDeleteModal(true);
+                    }}
+                    className="btn btn-secondary btn-sm btn-outline"
+                  >
+                    Löschen
+                  </button>
+                </div>
               </div>
             </li>
           ))}

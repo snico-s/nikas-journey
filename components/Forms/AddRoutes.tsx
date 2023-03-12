@@ -127,7 +127,10 @@ const AddRoutes = () => {
             </div>
             {processedFiles === numberOfSelectedFiles &&
             numberOfSelectedFiles > 0 ? (
-              <button className="btn" onClick={() => setUpload(true)}>
+              <button
+                className="btn btn-primary"
+                onClick={() => setUpload(true)}
+              >
                 Upload
               </button>
             ) : (
